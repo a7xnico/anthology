@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: anthology
+  
+  datasource:
+    url: jdbc:mysql://localhost:3307/anthologyDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+  profiles:
+    active: local
+
+  server:
+    port: 8080

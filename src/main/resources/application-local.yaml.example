@@ -1,0 +1,14 @@
+copiar archivo, renombrarlo a application-local.yaml y completar los valores
+
+spring:
+  datasource:
+    username:
+    password:
+
+google:
+  drive:
+    credentials-path: classpath:credentials.json
+    folder-id:
+
+musescore:
+  path:
