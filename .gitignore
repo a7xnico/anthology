@@ -33,7 +33,7 @@ build/
 .vscode/
 
 ### configuracion local ###
-src/main/resources/application-local.yml
+src/main/resources/application-local.yaml
 
 ### credenciales google drive ###
 src/main/resources/credentials.json
