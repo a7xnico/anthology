@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity{
+public class User extends SoftDeleteEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

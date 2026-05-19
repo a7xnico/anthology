@@ -7,15 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "songs")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Song extends BaseEntity{
+public class Song extends SoftDeleteEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
