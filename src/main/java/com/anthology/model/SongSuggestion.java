@@ -1,6 +1,6 @@
 package com.anthology.model;
 
-import com.anthology.enums.SongRequestStatus;
+import com.anthology.enums.SongSuggestionStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "song_requests")
+@Table(name = "song_suggestions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SongRequest extends BaseEntity{
+public class SongSuggestion extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,5 +40,5 @@ public class SongRequest extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SongRequestStatus status = SongRequestStatus.PENDING;
+    private SongSuggestionStatus status = SongSuggestionStatus.PENDING;
 }

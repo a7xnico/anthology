@@ -1,6 +1,6 @@
 package com.anthology.enums;
 
-public enum SongRequestStatus {
+public enum SongSuggestionStatus {
     PENDING,
     ADDED,
     REJECTED
