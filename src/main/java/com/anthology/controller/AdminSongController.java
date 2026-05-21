@@ -5,6 +5,7 @@ import com.anthology.dto.requests.SongUpdateRequest;
 import com.anthology.dto.responses.SongResponse;
 import com.anthology.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +32,9 @@ public class AdminSongController {
     })
     @PostMapping
     public ResponseEntity<SongResponse> createSong(@Valid @RequestBody SongRequest request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(songService.createSong(request));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(songService.createSong(request));
     }
 
     @Operation(summary = "Editar canción", description = "Modifica parcialmente los datos de una canción existente")
@@ -41,9 +44,12 @@ public class AdminSongController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @PatchMapping("/{id}")
-    public ResponseEntity<SongResponse> updateSong(@PathVariable Long id,
-                                                   @Valid @RequestBody SongUpdateRequest request){
-        return ResponseEntity.status(HttpStatus.OK).body(songService.updateSong(id, request));
+    public ResponseEntity<SongResponse> updateSong(
+            @Parameter(description = "ID de la canción") @PathVariable Long id,
+            @Valid @RequestBody SongUpdateRequest request){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songService.updateSong(id, request));
     }
 
     @Operation(summary = "Eliminar canción", description = "Realiza un borrado lógico de la canción y sus versiones")
@@ -52,16 +58,21 @@ public class AdminSongController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSong(@PathVariable Long id){
+    public ResponseEntity<Void> deleteSong(
+            @Parameter(description = "ID de la canción") @PathVariable Long id){
         songService.deleteSong(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
     @Operation(summary = "Listar canciones", description = "Devuelve todas las canciones del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de canciones obtenida exitosamente")
     @GetMapping
     public ResponseEntity<List<SongResponse>> findAllSongs(){
-        return ResponseEntity.status(HttpStatus.OK).body(songService.findAllSongs());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songService.findAllSongs());
     }
 
 

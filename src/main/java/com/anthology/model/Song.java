@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "songs")
@@ -42,5 +42,12 @@ public class Song extends SoftDeleteEntity{
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     private String genre;
+
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    private Album album;
+
+    @OneToMany(mappedBy = "song")
+    private List<SongVersion> songVersions = new ArrayList<>();
 
 }

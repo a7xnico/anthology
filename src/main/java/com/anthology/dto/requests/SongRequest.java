@@ -21,11 +21,17 @@ public record SongRequest(
         String artistName,
 
         @Schema(
-                description = "Género musical de la canción",
+                description = "Género musical",
                 example = "Rock"
         )
         @NotBlank(message = "El género no puede estar vacío")
         @Size(max = 100, message = "El género no puede superar los 100 caracteres")
-        String genre
+        String genre,
+
+        @Schema(
+                description = "ID del álbum al que pertenece la canción, opcional",
+                example = "1"
+        )
+        Long albumId
 ) {
 }

@@ -5,6 +5,7 @@ import com.anthology.dto.requests.SongVersionRequest;
 import com.anthology.dto.responses.SongVersionResponse;
 import com.anthology.service.SongVersionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -31,8 +32,9 @@ public class AdminSongVersionController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SongVersionResponse> createVersion(
-            @PathVariable Long songId,
+            @Parameter(description = "ID de la canción") @PathVariable Long songId,
             @RequestPart("data") @Valid SongVersionRequest request,
+            @Parameter(description = "Archivo MusicXML o Guitar Pro")
             @RequestPart("file")MultipartFile file){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
