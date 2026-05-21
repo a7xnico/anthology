@@ -30,6 +30,8 @@ public class SongVersionService {
         version.setInstrument(request.instrument());
         version.setStatus(Status.APPROVED);
 
+        // ACA VA LO RELACIONADO A CONVERTIR EL ARCHIVO MusicXML o GuitarPro
+
         return songVersionMapper.toDTO(songVersionRepository.save(version));
     }
 }
