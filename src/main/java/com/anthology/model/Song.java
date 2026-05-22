@@ -7,15 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLRestriction;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table(name = "songs")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Song extends BaseEntity{
+public class Song extends SoftDeleteEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,5 +42,12 @@ public class Song extends BaseEntity{
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     private String genre;
+
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    private Album album;
+
+    @OneToMany(mappedBy = "song")
+    private List<SongVersion> songVersions = new ArrayList<>();
 
 }

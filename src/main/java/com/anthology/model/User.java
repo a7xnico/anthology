@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity{
+public class User extends SoftDeleteEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
