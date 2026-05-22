@@ -32,7 +32,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Ya existe un usuario con ese nombre")
     })
     @PostMapping
-public ResponseEntity<UserResponse>createSong(@Valid @RequestBody UserRequest request)
+public ResponseEntity<UserResponse>createUser(@Valid @RequestBody UserRequest request)
 {
     return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
 }
@@ -76,7 +76,7 @@ public ResponseEntity<UserResponse>updateUser(@Parameter(description = "ID del u
     })
     @GetMapping("{id}")
     public ResponseEntity<UserResponse> findById(
-            @Parameter(description = "ID del álbum") @PathVariable Long id){
+            @Parameter(description = "ID del usuario") @PathVariable Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findById(id));
