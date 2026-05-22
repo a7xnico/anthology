@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;import org.springfr
 
 @Repository
 public interface ArtistRepository extends JpaRepository<Artist, Long> {
+    boolean existsByStageName(String stageName);
 }
