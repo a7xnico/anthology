@@ -11,7 +11,7 @@ public class PlaylistMapper {
     }
     public PlaylistResponse toDto(Playlist playlist)
     {
-        return  PlaylistResponse.builder().id(playlist.getId()).name(playlist.getName()).songVersions(playlist.getSongVersions()).build();
+        return  PlaylistResponse.builder().id(playlist.getId()).name(playlist.getName()).build();
     }
 
 }
