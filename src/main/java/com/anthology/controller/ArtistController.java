@@ -6,6 +6,7 @@ import com.anthology.dto.responses.ArtistResponse;
 import com.anthology.model.ArtistRequest;
 import com.anthology.service.ArtistService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +41,7 @@ public class ArtistController {
             @ApiResponse(responseCode = "404", description = "Artista no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ArtistResponse> findById(@PathVariable Long id){
+    public ResponseEntity<ArtistResponse> findById(@Parameter(description = "ID del Artista") @PathVariable Long id){
         return ResponseEntity.ok(artistService.findById(id));
     }
 
@@ -55,6 +56,18 @@ public class ArtistController {
     @PostMapping
     public ResponseEntity<ArtistResponse> create(@Valid @RequestBody ArtistRequest artistRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(artistService.createArtist(artistRequest));
+    }
+
+
+    @Operation(summary = "Modificar Artista", description = "Modifica los datos de un Artista")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Artista actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada invalido"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<ArtistResponse> update(@PathVariable Long id, @Valid @RequestBody ArtistRequest artistRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(artistService.updateById(id,artistRequest));
     }
 
 
