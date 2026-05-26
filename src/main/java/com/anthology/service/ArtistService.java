@@ -29,7 +29,7 @@ public class ArtistService {
             throw new DuplicateResourceException("Ya existe Artista con ese nombre");
         }
         /// falta manejar user
-        //if(userService.existsById(artistRequest.getUser().getId())){
+        //if(userService.findUserById(artistRequest.getUser().getId())){
        //    throw new ResourceNotFoundException("No existe ese usuario");
       //  }
 
