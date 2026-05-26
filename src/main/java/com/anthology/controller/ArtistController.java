@@ -22,18 +22,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/artists")
 @AllArgsConstructor
-
 @Tag(name = "Artistas", description = "Consulta de Artistas")
 public class ArtistController {
     private final ArtistService artistService;
-
-
-    @Operation(summary = "Buscar Artistas", description = "Buscar todos los Artistas")
-    @ApiResponse(responseCode = "200", description = "Busqueda realizada correctamente")
-    @GetMapping
-    public ResponseEntity<List<ArtistResponse>> findAllArtist(){
-        return ResponseEntity.ok(artistService.findAllArtist());
-    }
 
     @Operation(summary = "Buscar Artista especifico", description = "Devuelve datos de un Artista especifico buscado por ID")
     @ApiResponses({
@@ -44,39 +35,6 @@ public class ArtistController {
     public ResponseEntity<ArtistResponse> findById(@Parameter(description = "ID del Artista") @PathVariable Long id){
         return ResponseEntity.ok(artistService.findById(id));
     }
-
-
-
-    @Operation(summary = "Crear Artista", description = "Crea un nuevo Artista en el sistema")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Artista Creado correctamente"),
-            @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos"),
-            @ApiResponse(responseCode = "409", description = "Ya existe un Artista con ese Stage Name")
-    })
-    @PostMapping
-    public ResponseEntity<ArtistResponse> create(@Valid @RequestBody ArtistRequest artistRequest){
-        return ResponseEntity.status(HttpStatus.CREATED).body(artistService.createArtist(artistRequest));
-    }
-
-
-    @Operation(summary = "Modificar Artista", description = "Modifica los datos de un Artista")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Artista actualizado correctamente"),
-            @ApiResponse(responseCode = "400", description = "Datos de entrada invalido"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @PatchMapping("/{id}")
-    public ResponseEntity<ArtistResponse> update(@PathVariable Long id, @Valid @RequestBody ArtistRequest artistRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(artistService.updateById(id,artistRequest));
-    }
-
-
-
-
-
-
-
-
 
 
 }

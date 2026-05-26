@@ -20,6 +20,7 @@ import java.util.List;
 public class ArtistService {
 
     private  final ArtistService artistService;
+    ///private final  UserService userService;
     private final ArtistRepository artistRepository;
     private final ArtistMapper artistMapper;
 
@@ -27,6 +28,11 @@ public class ArtistService {
         if(artistRepository.existsByStageName(artistRequest.getStageName())){
             throw new DuplicateResourceException("Ya existe Artista con ese nombre");
         }
+        /// falta manejar user
+        //if(userService.existsById(artistRequest.getUser().getId())){
+       //    throw new ResourceNotFoundException("No existe ese usuario");
+      //  }
+
         Artist artist = artistMapper.toEntity(artistRequest);
 
         artist.setCreatedAt(LocalDateTime.now());
@@ -50,7 +56,7 @@ public class ArtistService {
         Artist artist = artistRepository.findArtistById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Artista No encontrado"));
 
-        if(artistRequest.getStageName() != null) artist.setBiography(artist.getBiography());
+        if(artistRequest.getBiography() != null) artist.setBiography(artist.getBiography());
         if(artistRequest.getBiography() != null)  artist.setBiography(artistRequest.getBiography());
         if(artistRequest.getInstagram() != null) artist.setInstagram(artistRequest.getInstagram());
         if(artistRequest.getSpotify() != null) artist.setSpotify(artistRequest.getSpotify());
