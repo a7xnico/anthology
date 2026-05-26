@@ -3,6 +3,7 @@ package com.anthology.model;
 
 import com.anthology.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -16,18 +17,21 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User extends SoftDeleteEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+
     @Size(min = 3, max = 50)
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @NotBlank
+    @Column(nullable = false,unique = true)
+    private String email;
+
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
