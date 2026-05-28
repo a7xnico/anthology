@@ -51,6 +51,21 @@ public class SongVersionService {
         return songVersionMapper.toDTO(findSongVersionById(versionId));
     }
 
+    public SongVersionResponse updateStatus(Long songId, Long versionId, Status status) {
+        songService.findSongById(songId);
+        SongVersion version = findSongVersionById(versionId);
+        version.setStatus(status);
+        return songVersionMapper.toDTO(songVersionRepository.save(version));
+    }
+
+// seria usado para artistController creo yo
+//    public List<SongVersionResponse> findMyVersions(Long artistId) {
+//        return songVersionRepository.findByArtistId(artistId)
+//                .stream()
+//                .map(songVersionMapper::toDTO)
+//                .toList();
+//    }
+
     public void deleteVersion(Long songId, Long versionId) {
         songService.findSongById(songId);
         SongVersion version = findSongVersionById(versionId);
