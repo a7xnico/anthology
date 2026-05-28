@@ -1,5 +1,6 @@
 package com.anthology.model;
 
+import com.anthology.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "songs")
-@SQLRestriction("deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL and status = 'APPROVED'")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,6 +43,10 @@ public class Song extends SoftDeleteEntity{
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     private String genre;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.APPROVED;
 
     @ManyToOne
     @JoinColumn(name = "album_id")
