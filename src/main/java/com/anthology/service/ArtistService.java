@@ -7,6 +7,7 @@ import com.anthology.exception.ResourceNotFoundException;
 import com.anthology.mapper.ArtistMapper;
 import com.anthology.model.Artist;
 import com.anthology.model.ArtistSuggestion;
+import com.anthology.model.User;
 import com.anthology.repository.ArtistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.util.List;
 public class ArtistService {
 
     private  final ArtistService artistService;
-    ///private final  UserService userService;
+    private final  UserService userService;
     private final ArtistRepository artistRepository;
     private final ArtistMapper artistMapper;
 
@@ -27,15 +28,13 @@ public class ArtistService {
         if(artistRepository.existsByStageName(artistRequest.getStageName())){
             throw new DuplicateResourceException("Ya existe Artista con ese nombre");
         }
-        /// falta manejar user
-        //if(userService.findUserById(artistRequest.getUser().getId())){
-       //    throw new ResourceNotFoundException("No existe ese usuario");
-      //  }
+        ///  User manejado en teoria falta probar
+        User user = userService.findUserById(artistRequest.getUser().getId());
+
 
         Artist artist = artistMapper.toEntity(artistRequest);
-
         artist.setCreatedAt(LocalDateTime.now());
-        /// falta manejar user
+
         return artistMapper.toDTO(artistRepository.save(artist));
     }
 
