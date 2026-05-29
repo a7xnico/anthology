@@ -4,6 +4,7 @@ import com.anthology.dto.requests.ArtistSuggestionRequest;
 import com.anthology.dto.responses.ArtistSuggestionResponse;
 import com.anthology.service.ArtistSuggestionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +42,11 @@ public class ArtistSuggestionController {
     @GetMapping
     public ResponseEntity<List<ArtistSuggestionResponse>> findAllArtistsSuggestion(){
         return ResponseEntity.ok(artistSuggestionService.findAll());
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ArtistSuggestionResponse> updateArtistSuggestion(@Parameter(description = "ID Artista") @PathVariable Long id, @Valid @RequestBody ArtistSuggestionRequest artistSuggestionRequest){
+        return ResponseEntity.ok(artistSuggestionService.cambiarEstadoSuggestion(id, artistSuggestionRequest));
     }
 
 
