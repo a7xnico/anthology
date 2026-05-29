@@ -43,7 +43,7 @@ public class UserService {
 
     public List<UserResponse> findAllUsers()
     {
-        return userRepository.findAll().stream().map(userMapper::toDto).toList;
+        return userRepository.findAll().stream().map(userMapper::toDto).toList();
 
     }
     public UserResponse findById(Long id)
