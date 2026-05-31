@@ -1,5 +1,6 @@
 package com.anthology.controller;
 
+import com.anthology.dto.requests.ArtistRequest;
 import com.anthology.dto.responses.ArtistResponse;
 import com.anthology.model.ArtistSuggestion;
 import com.anthology.service.ArtistService;
@@ -32,7 +33,7 @@ public class AdminArtistController {
             @ApiResponse(responseCode = "409", description = "Ya existe un Artista con ese Stage Name")
     })
     @PostMapping
-    public ResponseEntity<ArtistResponse> createArtist(@Valid @RequestBody ArtistSuggestion artistRequest){
+    public ResponseEntity<ArtistResponse> createArtist(@Valid @RequestBody ArtistRequest artistRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(artistService.createArtist(artistRequest));
     }
 
@@ -44,7 +45,7 @@ public class AdminArtistController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @PatchMapping("/{id}")
-    public ResponseEntity<ArtistResponse> updateArtist(@Parameter(description = "Id del Artista") @PathVariable Long id, @Valid @RequestBody ArtistSuggestion artistRequest){
+    public ResponseEntity<ArtistResponse> updateArtist(@Parameter(description = "Id del Artista") @PathVariable Long id, @Valid @RequestBody ArtistRequest artistRequest){
         return ResponseEntity.status(HttpStatus.OK).body(artistService.updateById(id,artistRequest));
     }
 
