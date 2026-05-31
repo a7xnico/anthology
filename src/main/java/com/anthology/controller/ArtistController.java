@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,16 @@ public class ArtistController {
     @GetMapping("/{id}")
     public ResponseEntity<ArtistResponse> findById(@Parameter(description = "ID del Artista") @PathVariable Long id){
         return ResponseEntity.ok(artistService.findById(id));
+    }
+
+    @Operation(summary = "Buscar Artista por nombre", description = "Devuelve datos de un Artista especifico buscado por nombre")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Artista encontrado"),
+            @ApiResponse(responseCode = "404", description = "Artista no encontrado")
+    })
+    @GetMapping("/buscar")
+    public ResponseEntity<ArtistResponse> findByArtistStageName(@Parameter(description = "Stage name del Artista")@RequestParam String stageName){
+        return ResponseEntity.ok(artistService.findByName(stageName));
     }
 
 
