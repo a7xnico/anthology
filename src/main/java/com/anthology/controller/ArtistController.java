@@ -59,7 +59,7 @@ public class ArtistController {
     /// publicos
     @Operation(summary = "Buscar Artistas", description = "Buscar todos los Artistas")
     @ApiResponse(responseCode = "200", description = "Busqueda realizada correctamente")
-    @GetMapping
+    @GetMapping("/public")
     public ResponseEntity<List<ArtistResponse>> findAllArtist(){
         return ResponseEntity.ok(artistService.findAllArtist());
     }
@@ -69,7 +69,7 @@ public class ArtistController {
             @ApiResponse(responseCode = "200", description = "Artista encontrado"),
             @ApiResponse(responseCode = "404", description = "Artista no encontrado")
     })
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<ArtistResponse> findById(@Parameter(description = "ID del Artista") @PathVariable Long id){
         return ResponseEntity.ok(artistService.findById(id));
     }
@@ -79,7 +79,7 @@ public class ArtistController {
             @ApiResponse(responseCode = "200", description = "Artista encontrado"),
             @ApiResponse(responseCode = "404", description = "Artista no encontrado")
     })
-    @GetMapping("/buscar")
+    @GetMapping("/public/buscar")
     public ResponseEntity<ArtistResponse> findByArtistStageName(@Parameter(description = "Stage name del Artista")@RequestParam String stageName){
         return ResponseEntity.ok(artistService.findByName(stageName));
     }

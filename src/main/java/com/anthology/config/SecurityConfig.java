@@ -32,25 +32,38 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
 
                     /// publicos
+                    http.requestMatchers("/auth/login").permitAll();
+                    http.requestMatchers("/auth/register").permitAll();
+
+
+                    http.requestMatchers("/api/public/**").permitAll();
+
+                    http.requestMatchers("/api/artists/public/**").permitAll();
+                    http.requestMatchers("/api/songs/public/**").permitAll();
+                    http.requestMatchers("/api/users/public/**").permitAll();
+                    http.requestMatchers("/api/albums/public/**").permitAll();
+
+                   /*
                     http.requestMatchers(HttpMethod.GET, "/auth/get").permitAll();
 
                     http.requestMatchers(HttpMethod.GET, "/api/songs/").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/albums/").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/artists/").permitAll();
-
+                */
                     /// privados
-                    http.requestMatchers("/api/admin/").hasRole("ADMIN");
+                   /* http.requestMatchers("/api/admin/").hasRole("ADMIN");
                     http.requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/api/users/").hasRole("ADMIN");
 
                     http.requestMatchers(HttpMethod.PATCH, "/api/users/").hasAnyRole("ADMIN", "USER");
 
                     http.requestMatchers(HttpMethod.POST,"/auth/post").hasAnyRole("ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE,"/auth/delete").hasAnyRole("ADMIN");
-                    /// defaults
-                    http.anyRequest().denyAll();
+                    http.requestMatchers(HttpMethod.DELETE,"/auth/delete").hasAnyRole("ADMIN");*/
+                    /// delegada a seguridad por metodos
+                    http.anyRequest().authenticated();
 
                 })
+
                 .build();
     }
 
