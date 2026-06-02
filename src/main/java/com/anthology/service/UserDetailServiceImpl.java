@@ -38,14 +38,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 
 
-/*
-            return new User(userEntity.getUsername(),
+
+            return new org.springframework.security.core.userdetails.User(userEntity.getUsername(),
                     userEntity.getPassword(),
                     userEntity.isEnabled(),
                     userEntity.isAccountNoExpired(),
                     userEntity.isCredentialNoExpired(),
                     userEntity.isAccountNoLocked(),
                     authorityList);
-        */
+
         }
 }

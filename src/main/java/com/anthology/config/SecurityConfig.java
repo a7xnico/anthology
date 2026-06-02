@@ -34,7 +34,17 @@ public class SecurityConfig {
                     /// publicos
                     http.requestMatchers(HttpMethod.GET, "/auth/get").permitAll();
 
+                    http.requestMatchers(HttpMethod.GET, "/api/songs/").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/albums/").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/artists/").permitAll();
+
                     /// privados
+                    http.requestMatchers("/api/admin/").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/users/").hasRole("ADMIN");
+
+                    http.requestMatchers(HttpMethod.PATCH, "/api/users/").hasAnyRole("ADMIN", "USER");
+
                     http.requestMatchers(HttpMethod.POST,"/auth/post").hasAnyRole("ADMIN");
                     http.requestMatchers(HttpMethod.DELETE,"/auth/delete").hasAnyRole("ADMIN");
                     /// defaults
