@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "songs")
-@SQLRestriction("deleted_at IS NULL and status = 'APPROVED'")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @NoArgsConstructor

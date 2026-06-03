@@ -4,6 +4,7 @@ import com.anthology.dto.requests.SongRequest;
 import com.anthology.dto.requests.SongUpdateRequest;
 import com.anthology.dto.responses.SongResponse;
 import com.anthology.enums.Instrument;
+import com.anthology.enums.Status;
 import com.anthology.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -85,6 +86,7 @@ public class SongController {
     @Operation(summary = "Buscar canciones", description = "Busca canciones aplicando filtros opcionales")
     @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente")
     @GetMapping
+    //@PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SongResponse>> findSongs(
             @Parameter(description = "Filtrar por título") @RequestParam(required = false) String title,
             @Parameter(description = "Filtrar por género") @RequestParam(required = false) String genre,
@@ -99,6 +101,7 @@ public class SongController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @GetMapping("/{id}")
+    //@PreAuthorize("isAuthenticated()")
     public ResponseEntity<SongResponse> findById(
             @Parameter(description = "ID de la canción") @PathVariable Long id){
         return ResponseEntity
@@ -112,11 +115,38 @@ public class SongController {
             @ApiResponse(responseCode = "400", description = "Instrumento inválido")
     })
     @GetMapping("/by-instrument")
+    //@PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SongResponse>> findByInstrument(
             @RequestParam Instrument instrument) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(songService.findByInstrument(instrument));
+    }
+
+    @Operation(summary = "Listar canciones por estado", description = "Devuelve canciones filtradas por su estado")
+    @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente")
+    @GetMapping("/status")
+    // @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<SongResponse>> findByStatus(
+            @Parameter(description = "Estado de la canción") @RequestParam Status status){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songService.findByStatus(status));
+    }
+
+    @Operation(summary = "Actualizar estado de una canción", description = "Aprueba o rechaza una canción pendiente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Canción no encontrada")
+    })
+    @PatchMapping("/{id}/status")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SongResponse> updateStatus(
+            @Parameter(description = "ID de la canción") @PathVariable Long id,
+            @Parameter(description = "Nuevo Estado") @RequestParam Status status){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songService.updateStatus(id, status));
     }
 
 

@@ -1,7 +1,7 @@
 package com.anthology.service;
 
-import com.anthology.dto.requests.SongVersionRequest;
 import com.anthology.dto.responses.SongVersionResponse;
+import com.anthology.enums.Instrument;
 import com.anthology.enums.Status;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
@@ -21,20 +21,27 @@ public class SongVersionService {
     private final SongVersionRepository songVersionRepository;
     private final SongVersionMapper songVersionMapper;
     private final SongService songService;
+    private final MuseScoreService museScoreService;
+    private final GoogleDriveService googleDriveService;
 
-    public SongVersionResponse createVersion(Long songId, SongVersionRequest request, MultipartFile file){
+    public SongVersionResponse createVersion(Long songId, Instrument instrument, MultipartFile file){
         Song song = songService.findSongById(songId);
 
-        if (songVersionRepository.existsBySongIdAndInstrument(songId, request.instrument()))
+        if (songVersionRepository.existsBySongIdAndInstrument(songId, instrument))
             throw new DuplicateResourceException("Ya existe una version para este instrumento");
+
+        byte[] pdfBytes = museScoreService.convertToPdf(file);
+
+        String pdfFilename = song.getTitle() + "_" + instrument + ".pdf";
+        String pdfDriveId = googleDriveService.uploadPdf(pdfBytes, pdfFilename);
+        String pdfUrl = googleDriveService.buildFileUrl(pdfDriveId);
 
         SongVersion version = new SongVersion();
         version.setSong(song);
-        version.setInstrument(request.instrument());
+        version.setInstrument(instrument);
         version.setStatus(Status.APPROVED);
-
-        // ACA VA LO RELACIONADO A CONVERTIR EL ARCHIVO MusicXML o GuitarPro
-
+        version.setPdfDriveId(pdfDriveId);
+        version.setPdfUrl(pdfUrl);
         return songVersionMapper.toDTO(songVersionRepository.save(version));
     }
 

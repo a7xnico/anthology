@@ -1,7 +1,7 @@
 package com.anthology.controller;
 
-import com.anthology.dto.requests.SongVersionRequest;
 import com.anthology.dto.responses.SongVersionResponse;
+import com.anthology.enums.Instrument;
 import com.anthology.enums.Status;
 import com.anthology.service.SongVersionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,16 +36,16 @@ public class SongVersionController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SongVersionResponse> createVersion(
             @Parameter(description = "ID de la canción") @PathVariable Long songId,
-            @RequestPart("data") @Valid SongVersionRequest request,
+            @Parameter(description = "Instrumento de la versión") @RequestParam Instrument instrument,
             @Parameter(description = "Archivo MusicXML o Guitar Pro")
             @RequestPart("file") MultipartFile file){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(songVersionService.createVersion(songId, request, file));
+                .body(songVersionService.createVersion(songId, instrument, file));
     }
 
     @GetMapping
-    public ResponseEntity<  List<SongVersionResponse>> findVersionsBySongId(
+    public ResponseEntity<List<SongVersionResponse>> findVersionsBySongId(
             @Parameter(description = "ID de la canción") @PathVariable Long songId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
