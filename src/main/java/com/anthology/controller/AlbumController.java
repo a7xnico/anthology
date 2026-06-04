@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "409", description = "Ya existe un álbum con ese título y artista")
     })
     @PostMapping
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AlbumResponse> createAlbum(@Valid @RequestBody AlbumRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -45,7 +46,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "404", description = "Álbum no encontrado")
     })
     @PatchMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AlbumResponse> updateAlbum(
             @Parameter(description = "ID del álbum") @PathVariable Long id,
             @Valid @RequestBody AlbumUpdateRequest request){
@@ -60,7 +61,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "404", description = "Álbum no encontrado")
     })
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAlbum(
             @Parameter(description = "ID del álbum") @PathVariable Long id){
         albumService.deleteAlbum(id);

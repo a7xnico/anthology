@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class SongSuggestionController {
             @ApiResponse(responseCode = "409", description = "Ya existe una sugerencia con ese nombre")
     })
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongSuggestionResponse> createSongSuggestion(@Valid @RequestBody SongSuggestionRequest request)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
@@ -37,6 +39,7 @@ public class SongSuggestionController {
     @Operation(summary = "Listar sugerencias", description = "Devuelve todas las sugerencias del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de sugerencias obtenida exitosamente")
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SongSuggestionResponse>> findAllSuggestions(){
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -48,6 +51,7 @@ public class SongSuggestionController {
             @ApiResponse(responseCode = "404", description = "sugerencia no encontrada")
     })
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongSuggestionResponse> findById(
             @Parameter(description = "ID de la sugerencia") @PathVariable Long id){
         return ResponseEntity
@@ -60,6 +64,7 @@ public class SongSuggestionController {
             @ApiResponse(responseCode = "404", description = "sugerencia no encontrada")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> statusRejected(
             @Parameter(description = "ID de la sugerencia") @PathVariable Long id){
         service.statusRejected(id);
@@ -68,6 +73,7 @@ public class SongSuggestionController {
                 .build();
     }
     @PatchMapping("/{id}/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongSuggestionResponse> finalizar(@PathVariable Long id) {
         SongSuggestionResponse songSuggestionResponse = service.statusAdded(id);
 
