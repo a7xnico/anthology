@@ -47,7 +47,7 @@ public class PlaylistService {
     }
     public List<PlaylistResponse> findAllPlaylist()
     {
-        return playlistRepository.findAll().stream().map(playlistMapper::toDto).toList;
+        return playlistRepository.findAll().stream().map(playlistMapper::toDto).toList();
 
     }
     public PlaylistResponse findById(Long id)

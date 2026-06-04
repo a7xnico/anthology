@@ -40,6 +40,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(LocalDateTime.now(), errors));
     }
 
+    @ExceptionHandler(FileConversionException.class)
+    public ResponseEntity<ErrorResponse> handleFileConversion(FileConversionException ex){
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(LocalDateTime.now(), ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex){
         return ResponseEntity
