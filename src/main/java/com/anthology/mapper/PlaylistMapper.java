@@ -13,7 +13,7 @@ public class PlaylistMapper {
     {
         /// Tira error checkear
         /// return  PlaylistResponse.builder().id(playlist.getId()).name(playlist.getName()).songVersions(playlist.getSongVersions()).build();
-        return  PlaylistResponse.builder().id(playlist.getId()).name(playlist.getName()).build();
+     ///   return  PlaylistResponse.builder().id(playlist.getId()).name(playlist.getName()).build();
     }
 
 }
