@@ -1,5 +1,8 @@
-package com.anthology.service;
+package com.anthology.JwtAndSecurity;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class JwtService {
 
 
