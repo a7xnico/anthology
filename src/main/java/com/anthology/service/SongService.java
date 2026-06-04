@@ -4,6 +4,7 @@ import com.anthology.dto.requests.SongRequest;
 import com.anthology.dto.requests.SongUpdateRequest;
 import com.anthology.dto.responses.SongResponse;
 import com.anthology.enums.Instrument;
+import com.anthology.enums.Status;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
 import com.anthology.mapper.SongMapper;
@@ -51,7 +52,6 @@ public class SongService {
 
     public void deleteSong(Long id){
         Song song = findSongById(id);
-
         song.softDelete();
         songRepository.save(song);
     }
@@ -79,6 +79,19 @@ public class SongService {
                 .stream()
                 .map(songMapper::toDTO)
                 .toList();
+    }
+
+    public List<SongResponse> findByStatus(Status status){
+        return songRepository.findByStatus(status)
+                .stream()
+                .map(songMapper::toDTO)
+                .toList();
+    }
+
+    public SongResponse updateStatus(Long id, Status status){
+        Song song = findSongById(id);
+        song.setStatus(status);
+        return songMapper.toDTO(songRepository.save(song));
     }
 
     public Song findSongById(Long id){
