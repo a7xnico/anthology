@@ -1,22 +1,29 @@
 package com.anthology.service;
 
 
-import com.anthology.JwtAndSecurity.JwtService;
-import com.anthology.repository.RoleRepository;
-import com.anthology.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.anthology.dto.JwtDTO.AuthRequestDTO;
+import com.anthology.repository.CredentialsRepository;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
+    private final CredentialsRepository credentialsRepository;
+    private final AuthenticationManager authenticationManager;
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserDetailServiceImpl userDetailsService;
-    private final JwtService jwtService;
+    public AuthService(CredentialsRepository credentialsRepository, AuthenticationManager authenticationManager){
+        this.credentialsRepository = credentialsRepository;
+        this.authenticationManager = authenticationManager;
+    }
 
+    public UserDetails authenticate(AuthRequestDTO input){
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                input.username(),
+                input.password()
+        ));
+        return credentialsRepository.findByUsername(input.username()).orElseThrow();
+    }
 }
