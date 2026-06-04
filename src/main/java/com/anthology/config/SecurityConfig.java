@@ -42,6 +42,9 @@ public class SecurityConfig {
                     http.requestMatchers("/api/songs/public/**").permitAll();
                     http.requestMatchers("/api/users/public/**").permitAll();
                     http.requestMatchers("/api/albums/public/**").permitAll();
+                    http.requestMatchers("/api/artistSuggestions/public/**").permitAll();
+                    http.requestMatchers("/api/playlists/public/**").permitAll();
+                    http.requestMatchers("/api//api/songs/{songId}/versions/public/**").permitAll();
 
                    /*
                     http.requestMatchers(HttpMethod.GET, "/auth/get").permitAll();
