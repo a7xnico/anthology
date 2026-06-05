@@ -6,6 +6,7 @@ import com.anthology.dto.responses.UserResponse;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
 import com.anthology.mapper.UserMapper;
+import com.anthology.model.Song;
 import com.anthology.model.User;
 import com.anthology.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class UserService {
         if(userRepository.exitsByUserName(userRequest.username()))
             throw new DuplicateResourceException("Ya existe un usuario con ese nombre");
          User user=userMapper.toEntity(userRequest);
-         return userMapper.toDto(userRepository.save(user));
+         return userMapper.toDTO(userRepository.save(user));
     }
 
     public UserResponse updateUser(Long id,UserUpdateRequest request)
@@ -33,26 +34,40 @@ public class UserService {
         if(request.email()!= null)user.setEmail(request.email());
         if(request.password()!= null)user.setPasswordHash(request.password());
 
-        return userMapper.toDto(userRepository.save(user));
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     public User findUserById(Long id)
     {
-        return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("user no encontrado"));
+        return userRepository
+                .findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("user no encontrado"));
     }
 
     public List<UserResponse> findAllUsers()
     {
-        return userRepository.findAll().stream().map(userMapper::toDto).toList();
+        return userRepository
+                .findAll()
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
 
     }
     public UserResponse findById(Long id)
     {
-        return userMapper.toDto(findUserById(id));
+        return userMapper.toDTO(findUserById(id));
     }
+
     public void deleateUser(Long id)
     {
         User user=findUserById(id);
         userRepository.delete(user);
     }
+
+    // utilizar borrado logico
+//    public void softDeleteUser(Long id){
+//        User user = findUserById(id);
+//        user.softDelete();
+//        userRepository.save(user);
+//    }
 }

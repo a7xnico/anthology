@@ -1,10 +1,7 @@
 package com.anthology.controller;
 
 import com.anthology.dto.requests.SongSuggestionRequest;
-import com.anthology.dto.requests.UserRequest;
 import com.anthology.dto.responses.SongSuggestionResponse;
-import com.anthology.dto.responses.UserResponse;
-import com.anthology.mapper.SongSuggestionMapper;
 import com.anthology.service.SongSuggestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
