@@ -76,9 +76,38 @@ public class PlaylistController {
     })
     @GetMapping("{id}")
     public ResponseEntity<PlaylistResponse> findById(
-            @Parameter(description = "ID del usuario") @PathVariable Long id){
+            @Parameter(description = "ID del playlist") @PathVariable Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(playlistService.findById(id));
     }
+    @Operation(summary = "Playlists de usuario", description = "Devuelve todos sus playlists por su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+
+   @GetMapping("{id}/user")
+    public ResponseEntity<List<PlaylistResponse>>findByuser(@Parameter(description = "ID del usuario")@PathVariable Long id)
+   {
+       return ResponseEntity.status(HttpStatus.OK).body(playlistService.findByUser(id));
+   }
+    @Operation(summary = "agregar version de cancion al playlist", description = "Agrega una version de una cancion en una playlist existente por sus ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cancion agregada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "404", description = "Playlist no encontrado"),
+            @ApiResponse(responseCode = "404", description = "SongVersion no enconntrada no encontrado")
+    })
+
+   @PatchMapping("/{idPlaylist}/canciones/{idSongVersion}")
+    public ResponseEntity<PlaylistResponse>agregarCancion(@Parameter (description = "ID del playlist")@PathVariable Long idPlaylist,@Parameter(description = "ID de la version de la cancion")@PathVariable Long idSongVersion)
+   {
+       return ResponseEntity.status(HttpStatus.OK).body(playlistService.agregarCancion(idPlaylist,idSongVersion));
+   }
+   @DeleteMapping("/{idPlaylist}/canciones/{idSongVersion}")
+    public ResponseEntity<PlaylistResponse>eliminarCancion(@Parameter (description = "ID del playlist")@PathVariable Long idPlaylist,@Parameter(description = "ID de la version de la cancion")@PathVariable Long idSongVersion)
+   {
+       return ResponseEntity.status(HttpStatus.OK).body(playlistService.eliminarCancion(idPlaylist,idSongVersion));
+   }
 }
