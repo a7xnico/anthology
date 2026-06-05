@@ -72,6 +72,7 @@ public class AlbumController {
 
     @Operation(summary = "Listar álbumes", description = "Devuelve todos los álbumes disponibles")
     @ApiResponse(responseCode = "200", description = "Lista de álbumes obtenida exitosamente")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<AlbumResponse>> findAllAlbums() {
         return ResponseEntity
@@ -84,6 +85,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "200", description = "álbum encontrado"),
             @ApiResponse(responseCode = "404", description = "álbum no encontrado")
     })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<AlbumResponse> findById(
             @Parameter(description = "ID del álbum") @PathVariable Long id){

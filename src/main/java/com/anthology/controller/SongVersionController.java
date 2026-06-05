@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ public class SongVersionController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada"),
             @ApiResponse(responseCode = "409", description = "Ya existe una versión para ese instrumento")
     })
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SongVersionResponse> createVersion(
             @Parameter(description = "ID de la canción") @PathVariable Long songId,
@@ -44,6 +46,7 @@ public class SongVersionController {
                 .body(songVersionService.createVersion(songId, instrument, file));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<SongVersionResponse>> findVersionsBySongId(
             @Parameter(description = "ID de la canción") @PathVariable Long songId) {
@@ -58,6 +61,7 @@ public class SongVersionController {
             @ApiResponse(responseCode = "200", description = "Versión encontrada"),
             @ApiResponse(responseCode = "404", description = "Versión no encontrada")
     })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{versionId}")
     public ResponseEntity<SongVersionResponse> findVersionById(
             @Parameter(description = "ID de la canción") @PathVariable Long songId,
@@ -74,7 +78,7 @@ public class SongVersionController {
             @ApiResponse(responseCode = "404", description = "Versión no encontrada")
     })
     @PatchMapping("/{versionId}/status")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongVersionResponse> updateStatus(
             @Parameter(description = "ID de la canción") @PathVariable Long songId,
             @Parameter(description = "ID de la versión") @PathVariable Long versionId,
@@ -91,7 +95,7 @@ public class SongVersionController {
             @ApiResponse(responseCode = "404", description = "Versión no encontrada")
     })
     @DeleteMapping("/{versionId}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteVersion(
             @Parameter(description = "ID de la canción") @PathVariable Long songId,
             @Parameter(description = "ID de la versión") @PathVariable Long versionId) {

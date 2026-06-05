@@ -50,7 +50,7 @@ public class SongSuggestionController {
             @ApiResponse(responseCode = "200", description = "sugerencia encontrada"),
             @ApiResponse(responseCode = "404", description = "sugerencia no encontrada")
     })
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongSuggestionResponse> findById(
             @Parameter(description = "ID de la sugerencia") @PathVariable Long id){

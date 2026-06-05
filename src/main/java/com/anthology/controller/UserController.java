@@ -36,6 +36,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
             @ApiResponse(responseCode = "409", description = "Ya existe un usuario con ese nombre")
     })
+
     @PostMapping
     public ResponseEntity<UserResponse>createUser(@Valid @RequestBody UserRequest request)
     {
@@ -49,6 +50,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponse>updateUser(@Parameter(description = "ID del usuario")@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request)
     {
@@ -56,7 +58,7 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Eliminar ususario", description = "Realiza un borrado lógico del usuario ")
+    @Operation(summary = "Eliminar usuario", description = "Realiza un borrado lógico del usuario ")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "usuario eliminado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -74,6 +76,7 @@ public class UserController {
 
     @Operation(summary = "Listar usuarios", description = "Devuelve todas los usuarios del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAllUsers(){
         return ResponseEntity
@@ -87,7 +90,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "usuario encontrado"),
             @ApiResponse(responseCode = "404", description = "usuario no encontrado")
     })
-    @GetMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(
             @Parameter(description = "ID del usuario") @PathVariable Long id){
         return ResponseEntity

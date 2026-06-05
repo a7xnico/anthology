@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api/songs")
 @AllArgsConstructor
 @Tag(name = "canciones", description = "Gestión y consulta de canciones")
-//@PreAuthorize("denyAll")
+@PreAuthorize("denyAll")
 public class SongController {
     private final SongService songService;
 

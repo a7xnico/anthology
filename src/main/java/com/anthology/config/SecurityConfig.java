@@ -18,55 +18,30 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity)throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity,JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                    AuthenticationProvider authenticationProvider) {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(http -> {
 
-                    /// publicos
-                    http.requestMatchers("/auth/login").permitAll();
-                    http.requestMatchers("/auth/register").permitAll();
 
-
-                    http.requestMatchers("/api/public/**").permitAll();
-
-                    http.requestMatchers("/api/artists/public/**").permitAll();
-                    http.requestMatchers("/api/songs/public/**").permitAll();
-                    http.requestMatchers("/api/users/public/**").permitAll();
-                    http.requestMatchers("/api/albums/public/**").permitAll();
-                    http.requestMatchers("/api/artistSuggestions/public/**").permitAll();
-                    http.requestMatchers("/api/playlists/public/**").permitAll();
-                    http.requestMatchers("/api//api/songs/{songId}/versions/public/**").permitAll();
-
-                   /*
-                    http.requestMatchers(HttpMethod.GET, "/auth/get").permitAll();
-
-                    http.requestMatchers(HttpMethod.GET, "/api/songs/").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/albums/").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/artists/").permitAll();
-                */
-                    /// privados
-                   /* http.requestMatchers("/api/admin/").hasRole("ADMIN");
-                    http.requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/api/users/").hasRole("ADMIN");
-
-                    http.requestMatchers(HttpMethod.PATCH, "/api/users/").hasAnyRole("ADMIN", "USER");
-
-                    http.requestMatchers(HttpMethod.POST,"/auth/post").hasAnyRole("ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE,"/auth/delete").hasAnyRole("ADMIN");*/
-                    /// delegada a seguridad por metodos
+                    http.requestMatchers(HttpMethod.POST, "/auth").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/api/users").permitAll();
                     http.anyRequest().authenticated();
 
                 })
-
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -75,6 +50,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailServiceImpl userDetailService) {

@@ -38,6 +38,7 @@ public class ArtistSuggestionController {
 
     @Operation(summary = "Buscar sugerencias artistas", description = "Busca a todas las sugerencias artistas")
     @ApiResponse(responseCode = "200", description = "Busqueda realizada correctamente")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<ArtistSuggestionResponse>> findAllArtistsSuggestion(){
         return ResponseEntity.ok(artistSuggestionService.findAll());

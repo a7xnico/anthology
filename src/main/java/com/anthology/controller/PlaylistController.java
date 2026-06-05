@@ -67,6 +67,7 @@ public class PlaylistController {
     }
     @Operation(summary = "Listar playlist", description = "Devuelve todas los playlist del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de playlist obtenida exitosamente")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> findAllPlaylist(){
         return ResponseEntity
@@ -78,7 +79,8 @@ public class PlaylistController {
             @ApiResponse(responseCode = "200", description = "Playlist encontrado"),
             @ApiResponse(responseCode = "404", description = "Playlist no encontrado")
     })
-    @GetMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
     public ResponseEntity<PlaylistResponse> findById(
             @Parameter(description = "ID del usuario") @PathVariable Long id){
         return ResponseEntity
