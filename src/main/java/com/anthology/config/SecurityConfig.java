@@ -1,7 +1,9 @@
 package com.anthology.config;
 
 
+import com.anthology.exception.RestAuthenticationEntryPoint;
 import com.anthology.service.UserDetailServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,9 +27,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
+
+
     @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity,JwtAuthenticationFilter jwtAuthenticationFilter,
-                                                    AuthenticationProvider authenticationProvider) {
+    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity,
+                                                    JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                    AuthenticationProvider authenticationProvider,
+                                                    RestAuthenticationEntryPoint authenticationEntryPoint) {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -35,12 +41,14 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(http -> {
 
-
                     http.requestMatchers(HttpMethod.POST, "/auth").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/api/users").permitAll();
                     http.anyRequest().authenticated();
 
                 })
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
