@@ -1,7 +1,9 @@
 package com.anthology.JwtAndSecurity;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 
@@ -20,13 +22,17 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
+
 public class JwtService {
 
     @Value("${security.jwt.secret-key}")
     private String jwtSecretKey;
 
-    @Value("${jwt.expiration-ms}")
+    @Value("${security.jwt.expiration-ms}")
     private Long jwtExpiration;
+
+    @Value("${security.jwt.refresh-expiration-ms}")
+    private Long refreshTokenExpiration;
 
 
     public String generateToken(UserDetails userDetails) {
@@ -43,8 +49,27 @@ public class JwtService {
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSigningKey())
+                .signWith(getSignInKey())
                 .compact();
+    }
+    public String generateRefreshToken(UserDetails userDetails){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type","refresh");
+        return buildToken(claims,userDetails, refreshTokenExpiration);
+    }
+
+    public boolean validateRefreshToken(String refreshToken, UserDetails userDetails){
+        try {
+            Jwts.parser()
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(refreshToken);
+
+            final String username = extractUsername(refreshToken);
+            return (username.equals(userDetails.getUsername())) && !isTokenExpired(refreshToken);
+        }catch (JwtException e){
+            return false;
+        }
     }
 
 
@@ -73,14 +98,29 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(getSignInKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    private SecretKey getSigningKey() {
+    private SecretKey getSignInKey() {
         return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
+    }
+    private String buildToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails,
+            long expiration
+    ) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() +
+                        expiration))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
 }
