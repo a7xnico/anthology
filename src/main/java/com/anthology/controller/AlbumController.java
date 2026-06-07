@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "409", description = "Ya existe un álbum con ese título y artista")
     })
     @PostMapping
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AlbumResponse> createAlbum(@Valid @RequestBody AlbumRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -45,7 +46,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "404", description = "Álbum no encontrado")
     })
     @PatchMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AlbumResponse> updateAlbum(
             @Parameter(description = "ID del álbum") @PathVariable Long id,
             @Valid @RequestBody AlbumUpdateRequest request){
@@ -60,7 +61,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "404", description = "Álbum no encontrado")
     })
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAlbum(
             @Parameter(description = "ID del álbum") @PathVariable Long id){
         albumService.deleteAlbum(id);
@@ -71,6 +72,7 @@ public class AlbumController {
 
     @Operation(summary = "Listar álbumes", description = "Devuelve todos los álbumes disponibles")
     @ApiResponse(responseCode = "200", description = "Lista de álbumes obtenida exitosamente")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<AlbumResponse>> findAllAlbums() {
         return ResponseEntity
@@ -83,6 +85,7 @@ public class AlbumController {
             @ApiResponse(responseCode = "200", description = "álbum encontrado"),
             @ApiResponse(responseCode = "404", description = "álbum no encontrado")
     })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<AlbumResponse> findById(
             @Parameter(description = "ID del álbum") @PathVariable Long id){

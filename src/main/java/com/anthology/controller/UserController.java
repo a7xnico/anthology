@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,36 +25,46 @@ import java.util.List;
 @AllArgsConstructor
 
 public class UserController {
+
+
     private final UserService userService;
+
+
     @Operation(summary = "Crear usuario", description = "Crea un nuevo usuario base en el sistema")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
             @ApiResponse(responseCode = "409", description = "Ya existe un usuario con ese nombre")
     })
+
     @PostMapping
-public ResponseEntity<UserResponse>createUser(@Valid @RequestBody UserRequest request)
-{
+    public ResponseEntity<UserResponse>createUser(@Valid @RequestBody UserRequest request)
+    {
     return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
-}
+    }
+
+
     @Operation(summary = "Editar usuario", description = "Modifica parcialmente los datos de un usuario existente")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/{id}")
-public ResponseEntity<UserResponse>updateUser(@Parameter(description = "ID del usuario")@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request)
+    public ResponseEntity<UserResponse>updateUser(@Parameter(description = "ID del usuario")@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request)
     {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, request));
-
     }
-    @Operation(summary = "Eliminar ususario", description = "Realiza un borrado lógico del usuario ")
+
+
+    @Operation(summary = "Eliminar usuario", description = "Realiza un borrado lógico del usuario ")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "usuario eliminado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(
             @Parameter(description = "ID del usuario") @PathVariable Long id){
         userService.deleateUser(id);
@@ -61,25 +72,32 @@ public ResponseEntity<UserResponse>updateUser(@Parameter(description = "ID del u
                 .noContent()
                 .build();
     }
+
+
     @Operation(summary = "Listar usuarios", description = "Devuelve todas los usuarios del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAllUsers(){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findAllUsers());
     }
+
+
     @Operation(summary = "Detalle de usuario", description = "Devuelve el detalle de un usuario por su ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "usuario encontrado"),
             @ApiResponse(responseCode = "404", description = "usuario no encontrado")
     })
-    @GetMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(
             @Parameter(description = "ID del usuario") @PathVariable Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findById(id));
     }
+
 
 }

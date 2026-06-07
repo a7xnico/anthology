@@ -32,6 +32,7 @@ public class ArtistService {
         User user = userService.findUserById(artistRequest.userId());
 
         Artist artist = artistMapper.toEntity(artistRequest);
+        artist.setUser(user);
         artist.setCreatedAt(LocalDateTime.now());
 
         return artistMapper.toDTO(artistRepository.save(artist));

@@ -2,7 +2,6 @@ package com.anthology.service;
 
 import com.anthology.dto.requests.SongSuggestionRequest;
 import com.anthology.dto.responses.SongSuggestionResponse;
-import com.anthology.dto.responses.UserResponse;
 import com.anthology.enums.SongSuggestionStatus;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
@@ -31,22 +30,27 @@ public class SongSuggestionService {
         User user=userService.findUserById(request.idUser());
         SongSuggestion songSuggestion=mapper.toEntity(request);
         songSuggestion.setUser(user);
-        return mapper.toDto(repository.save(songSuggestion));
+        return mapper.toDTO(repository.save(songSuggestion));
 
     }
     public SongSuggestion findSongSuggestionByid(Long id)
     {
-        return repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("no se encontro la cancion sugerida"));
+        return repository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("no se encontro la cancion sugerida"));
 
     }
     public List<SongSuggestionResponse> findAllSongSuggestion()
     {
-        return repository.findAll().stream().map(mapper::toDto).toList;
+        return repository
+                .findAll()
+                .stream()
+                .map(mapper::toDTO)
+                .toList();
 
     }
     public SongSuggestionResponse findById(Long id)
     {
-        return mapper.toDto(findSongSuggestionByid(id));
+        return mapper.toDTO(findSongSuggestionByid(id));
     }
     public void deleateSongSuggestion(Long id)
     {
@@ -57,7 +61,7 @@ public class SongSuggestionService {
     {
        SongSuggestion songSuggestion=repository.findByIdAndStatus(id,SongSuggestionStatus.ADDED).orElseThrow(()-> new ResourceNotFoundException("no se encontro el id"));
        songSuggestion.setStatus(SongSuggestionStatus.ADDED);
-       return mapper.toDto(songSuggestion);
+       return mapper.toDTO(songSuggestion);
     }
     public void statusRejected(Long id)
     {

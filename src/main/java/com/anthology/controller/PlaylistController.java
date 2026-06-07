@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class PlaylistController {
             @ApiResponse(responseCode = "409", description = "Ya existe un playlist con ese nombre")
     })
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlaylistResponse> createPlaylist(@Valid @RequestBody PlaylistRequest request)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body((playlistService.create(request)));
@@ -43,6 +45,7 @@ public class PlaylistController {
             @ApiResponse(responseCode = "404", description = "Playlist no encontrado")
     })
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlaylistResponse>updatePlaylist(@Parameter(description = "ID del playlist")@PathVariable Long id, @Valid @RequestBody PlaylistUpdateRequest request)
     {
         return ResponseEntity.status(HttpStatus.OK).body(playlistService.updatePlaylist(id,request));
@@ -54,6 +57,7 @@ public class PlaylistController {
             @ApiResponse(responseCode = "404", description = "Playlist no encontrado")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePlaylist(
             @Parameter(description = "ID del playlist") @PathVariable Long id){
         playlistService.deleatePlaylist(id);
@@ -63,6 +67,7 @@ public class PlaylistController {
     }
     @Operation(summary = "Listar playlist", description = "Devuelve todas los playlist del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de playlist obtenida exitosamente")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> findAllPlaylist(){
         return ResponseEntity
@@ -74,7 +79,8 @@ public class PlaylistController {
             @ApiResponse(responseCode = "200", description = "Playlist encontrado"),
             @ApiResponse(responseCode = "404", description = "Playlist no encontrado")
     })
-    @GetMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
     public ResponseEntity<PlaylistResponse> findById(
             @Parameter(description = "ID del playlist") @PathVariable Long id){
         return ResponseEntity

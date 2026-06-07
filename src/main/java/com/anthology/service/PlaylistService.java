@@ -2,13 +2,10 @@ package com.anthology.service;
 
 import com.anthology.dto.requests.PlaylistRequest;
 import com.anthology.dto.requests.PlaylistUpdateRequest;
-import com.anthology.dto.requests.UserUpdateRequest;
 import com.anthology.dto.responses.PlaylistResponse;
-import com.anthology.dto.responses.UserResponse;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
 import com.anthology.mapper.PlaylistMapper;
-import com.anthology.model.Album;
 import com.anthology.model.Playlist;
 import com.anthology.model.SongVersion;
 import com.anthology.model.User;
@@ -29,6 +26,18 @@ public class PlaylistService {
     public PlaylistResponse create(PlaylistRequest playlistRequest) {
         if (playlistRepository.exitsByName(playlistRequest.name()))
             throw new DuplicateResourceException("Ya existe un playlist con ese nombre");
+/* Me tiro un mergeConflict revisar luego
+
+        Playlist playlist=playlistMapper.toEntity(playlistRequest);
+        return playlistMapper.toDTO(playlistRepository.save(playlist));
+    }
+    public PlaylistResponse updatePlaylist(Long id, PlaylistUpdateRequest request)
+    {
+        Playlist playlist=findPlaylistById(id);
+        if(request.name()!= null)playlist.setName(request.name());
+
+       User user= userService.findUserById(request.idUser());
+       if(request.idUser()!= null)playlist.setUser(user);
         Playlist playlist = playlistMapper.toEntity(playlistRequest);
         return playlistMapper.toDto(playlistRepository.save(playlist));
     }
@@ -40,13 +49,32 @@ public class PlaylistService {
         if (request.idUser() != null) playlist.setUser(user);
 
 
-        return playlistMapper.toDto(playlistRepository.save(playlist));
+       return playlistMapper.toDTO(playlistRepository.save(playlist));
     }
-
+*/
     public Playlist findPlaylistById(Long id) {
         return playlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Playlist no encontrado"));
     }
+  /* Me tiro un mergeConflict revisar luego
+  
+  public List<PlaylistResponse> findAllPlaylist()
+    {
+        return playlistRepository
+                .findAll()
+                .stream()
+                .map(playlistMapper::toDTO)
+                .toList();
+
+    }
+    public PlaylistResponse findById(Long id)
+    {
+        return playlistMapper.toDTO(findPlaylistById(id));
+    }
+
+    public void deleatePlaylist(Long id)
+    {
+        Playlist playlist=findPlaylistById(id);
 
     public List<PlaylistResponse> findAllPlaylist() {
         return playlistRepository.findAll().stream().map(playlistMapper::toDto).toList();
@@ -61,7 +89,7 @@ public class PlaylistService {
         Playlist playlist = findPlaylistById(id);
         playlistRepository.delete(playlist);
     }
-
+*/
     public List<PlaylistResponse> findByUser(Long id)
     {
         User user=userService.findUserById(id);

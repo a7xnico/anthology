@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api/songs")
 @AllArgsConstructor
 @Tag(name = "canciones", description = "Gestión y consulta de canciones")
-//@PreAuthorize("denyAll")
+@PreAuthorize("denyAll")
 public class SongController {
     private final SongService songService;
 
@@ -35,7 +36,7 @@ public class SongController {
             @ApiResponse(responseCode = "409", description = "Ya existe una canción con ese título y artista")
     })
     @PostMapping
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongResponse> createSong(@Valid @RequestBody SongRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -49,7 +50,7 @@ public class SongController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @PatchMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongResponse> updateSong(
             @Parameter(description = "ID de la canción") @PathVariable Long id,
             @Valid @RequestBody SongUpdateRequest request){
@@ -64,7 +65,7 @@ public class SongController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteSong(
             @Parameter(description = "ID de la canción") @PathVariable Long id){
         songService.deleteSong(id);
@@ -76,7 +77,7 @@ public class SongController {
     @Operation(summary = "Listar todas las canciones", description = "Devuelve todas las canciones del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de canciones obtenida exitosamente")
     @GetMapping("/all")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SongResponse>> findAllSongs(){
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -86,7 +87,7 @@ public class SongController {
     @Operation(summary = "Buscar canciones", description = "Busca canciones aplicando filtros opcionales")
     @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente")
     @GetMapping
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SongResponse>> findSongs(
             @Parameter(description = "Filtrar por título") @RequestParam(required = false) String title,
             @Parameter(description = "Filtrar por género") @RequestParam(required = false) String genre,
@@ -101,7 +102,7 @@ public class SongController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @GetMapping("/{id}")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<SongResponse> findById(
             @Parameter(description = "ID de la canción") @PathVariable Long id){
         return ResponseEntity
@@ -115,7 +116,7 @@ public class SongController {
             @ApiResponse(responseCode = "400", description = "Instrumento inválido")
     })
     @GetMapping("/by-instrument")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SongResponse>> findByInstrument(
             @RequestParam Instrument instrument) {
         return ResponseEntity
@@ -126,7 +127,7 @@ public class SongController {
     @Operation(summary = "Listar canciones por estado", description = "Devuelve canciones filtradas por su estado")
     @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente")
     @GetMapping("/status")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SongResponse>> findByStatus(
             @Parameter(description = "Estado de la canción") @RequestParam Status status){
         return ResponseEntity
@@ -140,7 +141,7 @@ public class SongController {
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @PatchMapping("/{id}/status")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SongResponse> updateStatus(
             @Parameter(description = "ID de la canción") @PathVariable Long id,
             @Parameter(description = "Nuevo Estado") @RequestParam Status status){
