@@ -26,11 +26,12 @@ public class PlaylistService {
     public PlaylistResponse create(PlaylistRequest playlistRequest) {
         if (playlistRepository.exitsByName(playlistRequest.name()))
             throw new DuplicateResourceException("Ya existe un playlist con ese nombre");
-/* Me tiro un mergeConflict revisar luego
+/// Me tiro un mergeConflict revisar luego
 
         Playlist playlist=playlistMapper.toEntity(playlistRequest);
         return playlistMapper.toDTO(playlistRepository.save(playlist));
     }
+  /*
     public PlaylistResponse updatePlaylist(Long id, PlaylistUpdateRequest request)
     {
         Playlist playlist=findPlaylistById(id);
@@ -41,7 +42,7 @@ public class PlaylistService {
         Playlist playlist = playlistMapper.toEntity(playlistRequest);
         return playlistMapper.toDto(playlistRepository.save(playlist));
     }
-
+*/
     public PlaylistResponse updatePlaylist(Long id, PlaylistUpdateRequest request) {
         Playlist playlist = findPlaylistById(id);
         if (request.name() != null) playlist.setName(request.name());
@@ -51,14 +52,14 @@ public class PlaylistService {
 
        return playlistMapper.toDTO(playlistRepository.save(playlist));
     }
-*/
+
     public Playlist findPlaylistById(Long id) {
         return playlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Playlist no encontrado"));
     }
-  /* Me tiro un mergeConflict revisar luego
+  /// Me tiro un mergeConflict revisar luego
   
-  public List<PlaylistResponse> findAllPlaylist()
+/*  public List<PlaylistResponse> findAllPlaylist()
     {
         return playlistRepository
                 .findAll()
@@ -66,34 +67,34 @@ public class PlaylistService {
                 .map(playlistMapper::toDTO)
                 .toList();
 
-    }
-    public PlaylistResponse findById(Long id)
+    }*/
+   /* public PlaylistResponse findById(Long id)
     {
         return playlistMapper.toDTO(findPlaylistById(id));
-    }
+    }*/
 
-    public void deleatePlaylist(Long id)
+    /*public void deleatePlaylist(Long id)
     {
-        Playlist playlist=findPlaylistById(id);
+        Playlist playlist=findPlaylistById(id);*/
 
     public List<PlaylistResponse> findAllPlaylist() {
-        return playlistRepository.findAll().stream().map(playlistMapper::toDto).toList();
+        return playlistRepository.findAll().stream().map(playlistMapper::toDTO).toList();
 
     }
 
     public PlaylistResponse findById(Long id) {
-        return playlistMapper.toDto(findPlaylistById(id));
+        return playlistMapper.toDTO(findPlaylistById(id));
     }
 
     public void deleatePlaylist(Long id) {
         Playlist playlist = findPlaylistById(id);
         playlistRepository.delete(playlist);
     }
-*/
+
     public List<PlaylistResponse> findByUser(Long id)
     {
         User user=userService.findUserById(id);
-        return  user.getPlaylists().stream().map(playlistMapper::toDto).toList();
+        return  user.getPlaylists().stream().map(playlistMapper::toDTO).toList();
 
     }
     public PlaylistResponse agregarCancion(Long idPlaylist,Long idSongVersion)
@@ -104,7 +105,7 @@ public class PlaylistService {
 
         playlist.getSongVersions().add(songVersion);
 
-        return playlistMapper.toDto(playlist);
+        return playlistMapper.toDTO(playlist);
     }
     public PlaylistResponse eliminarCancion(Long idPlaylist,Long idSongVersion)
 
@@ -113,7 +114,7 @@ public class PlaylistService {
         Playlist playlist=findPlaylistById(idPlaylist);
          playlist.getSongVersions().remove(songVersion);
          playlistRepository.save(playlist);
-         return playlistMapper.toDto(playlist);
+         return playlistMapper.toDTO(playlist);
     }
 
 }

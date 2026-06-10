@@ -51,6 +51,8 @@ public class PlaylistController {
         return ResponseEntity.status(HttpStatus.OK).body(playlistService.updatePlaylist(id,request));
 
     }
+
+
     @Operation(summary = "Eliminar playlist", description = "Realiza un borrado lógico del playlist ")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Playlist eliminado exitosamente"),
@@ -65,6 +67,10 @@ public class PlaylistController {
                 .noContent()
                 .build();
     }
+
+
+
+
     @Operation(summary = "Listar playlist", description = "Devuelve todas los playlist del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de playlist obtenida exitosamente")
     @PreAuthorize("isAuthenticated()")

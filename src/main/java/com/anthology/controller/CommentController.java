@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class CommentController {
             @ApiResponse(responseCode = "201", description = "Comentario creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
     })
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<CommentsResponse> createComment(@Valid @RequestBody CommentsRequest request)
     {
@@ -38,6 +40,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteComment(
             @Parameter(description = "ID del comentario") @PathVariable Long id){
         commentService.deleateComment(id);
@@ -47,6 +50,7 @@ public class CommentController {
     }
     @Operation(summary = "Listar comentarios", description = "Devuelve todas los comentarios del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de comentarios obtenida exitosamente")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CommentsResponse>> findAllComments(){
         return ResponseEntity
@@ -58,6 +62,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Comentario encontrado"),
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("{id}")
     public ResponseEntity<CommentsResponse> findById(
             @Parameter(description = "ID del comentario") @PathVariable Long id){
