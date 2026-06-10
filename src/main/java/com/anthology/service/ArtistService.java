@@ -38,10 +38,13 @@ public class ArtistService {
         return artistMapper.toDTO(artistRepository.save(artist));
     }
 
-    public ArtistResponse findById(Long id){
+    public Artist findArtistById(Long id){
         return artistRepository.findById(id)
-                .map(artistMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Artista no encontrado..."));
+    }
+
+    public ArtistResponse findById(Long id){
+        return artistMapper.toDTO(findArtistById(id));
     }
 
     public ArtistResponse findByName(String stageName){
@@ -66,6 +69,12 @@ public class ArtistService {
         if(artistRequest.youtube() != null) artist.setYoutube(artistRequest.youtube());
 
         return artistMapper.toDTO(artistRepository.save(artist));
+    }
+
+
+    public void deleteArtist(Long id){
+        Artist artist = findArtistById(id);
+        artistRepository.delete(artist);
     }
 
 }
