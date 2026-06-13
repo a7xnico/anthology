@@ -47,6 +47,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(LocalDateTime.now(), ex.getMessage()));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(LocalDateTime.now(), ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex){
         return ResponseEntity

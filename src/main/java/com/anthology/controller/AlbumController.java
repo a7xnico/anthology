@@ -3,6 +3,8 @@ package com.anthology.controller;
 import com.anthology.dto.requests.AlbumRequest;
 import com.anthology.dto.requests.AlbumUpdateRequest;
 import com.anthology.dto.responses.AlbumResponse;
+import com.anthology.enums.Status;
+import com.anthology.model.CredentialsEntity;
 import com.anthology.service.AlbumService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +40,16 @@ public class AlbumController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(albumService.createAlbum(request));
+    }
+
+    @PostMapping("/artist")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<AlbumResponse> createAlbumAsArtist(
+            @Valid @RequestBody AlbumRequest request,
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(albumService.createAlbumAsArtist(request, credentials.getUser().getId()));
     }
 
     @Operation(summary = "Editar álbum", description = "Modifica parcialmente los datos de un álbum existente")
@@ -70,6 +83,16 @@ public class AlbumController {
                 .build();
     }
 
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AlbumResponse> updateStatus(
+            @Parameter(description = "ID del álbum") @PathVariable Long id,
+            @Parameter(description = "Nuevo estado") @RequestParam Status status) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(albumService.updateStatus(id, status));
+    }
+
     @Operation(summary = "Listar álbumes", description = "Devuelve todos los álbumes disponibles")
     @ApiResponse(responseCode = "200", description = "Lista de álbumes obtenida exitosamente")
     @PreAuthorize("isAuthenticated()")
@@ -94,7 +117,21 @@ public class AlbumController {
                 .body(albumService.findById(id));
     }
 
+    @GetMapping("/my-albums")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<List<AlbumResponse>> findMyAlbums(
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(albumService.findMyAlbums(credentials.getUser().getId()));
+    }
 
+    @GetMapping("/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AlbumResponse>> findByStatus(
+            @RequestParam Status status) {
+        return ResponseEntity.ok(albumService.findByStatus(status));
+    }
 
 
 

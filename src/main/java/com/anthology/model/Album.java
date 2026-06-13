@@ -1,5 +1,6 @@
 package com.anthology.model;
 
+import com.anthology.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,4 +29,12 @@ public class Album extends BaseEntity {
 
     @Column(name = "artist_name")
     private String artistName;
+
+    @ManyToOne
+    @JoinColumn(name = "artist_id")
+    private Artist artist;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.APPROVED;
 }
