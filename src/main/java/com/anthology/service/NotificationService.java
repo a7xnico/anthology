@@ -25,7 +25,7 @@ public class NotificationService {
     }
 
     public List<NotificationResponse> findAll() {
-        return notificationRepository.findAllByOrderCreatedAtDesc()
+        return notificationRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(notificationMapper::toDTO)
                 .toList();
