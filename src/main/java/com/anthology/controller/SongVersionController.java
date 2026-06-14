@@ -34,7 +34,7 @@ public class SongVersionController {
             @ApiResponse(responseCode = "201", description = "Versión creada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
             @ApiResponse(responseCode = "404", description = "Canción no encontrada"),
-            @ApiResponse(responseCode = "409", description = "Ya existe una versión para ese instrumento")
+            @ApiResponse(responseCode = "409", description = "Ya existe una versión para ese instrumento"),
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
