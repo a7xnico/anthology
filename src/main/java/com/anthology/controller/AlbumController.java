@@ -42,6 +42,13 @@ public class AlbumController {
                 .body(albumService.createAlbum(request));
     }
 
+    @Operation(summary = "Crear álbum como artista", description = "Crea un nuevo álbum pendiente de aprobación")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Álbum creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "403", description = "No tenés perfil de artista"),
+            @ApiResponse(responseCode = "409", description = "Ya existe un álbum con ese título y artista")
+    })
     @PostMapping("/artist")
     @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<AlbumResponse> createAlbumAsArtist(
@@ -117,6 +124,8 @@ public class AlbumController {
                 .body(albumService.findById(id));
     }
 
+    @Operation(summary = "Mis álbumes", description = "Devuelve todos los álbumes del artista autenticado con su estado")
+    @ApiResponse(responseCode = "200", description = "Lista de álbumes obtenida exitosamente")
     @GetMapping("/my-albums")
     @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<List<AlbumResponse>> findMyAlbums(
@@ -133,6 +142,37 @@ public class AlbumController {
         return ResponseEntity.ok(albumService.findByStatus(status));
     }
 
+    @Operation(summary = "Editar álbum como artista", description = "Modifica parcialmente un álbum propio pendiente de aprobación")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Álbum actualizado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para editar este álbum"),
+            @ApiResponse(responseCode = "404", description = "Álbum no encontrado")
+    })
+    @PatchMapping("/artist/{id}")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<AlbumResponse> updateAlbumAsArtist(
+            @Parameter(description = "ID del álbum") @PathVariable Long id,
+            @Valid @RequestBody AlbumUpdateRequest request,
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(albumService.updateAlbumAsArtist(id, request, credentials.getUser().getId()));
+    }
 
+    @Operation(summary = "Eliminar álbum como artista", description = "Elimina un álbum propio pendiente de aprobación")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Álbum eliminado exitosamente"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para eliminar este álbum"),
+            @ApiResponse(responseCode = "404", description = "Álbum no encontrado")
+    })
+    @DeleteMapping("/artist/{id}")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<Void> deleteAlbumAsArtist(
+            @Parameter(description = "ID del álbum") @PathVariable Long id,
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        albumService.deleteAlbumAsArtist(id, credentials.getUser().getId());
+        return ResponseEntity.noContent().build();
+    }
 
 }

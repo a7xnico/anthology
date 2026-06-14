@@ -28,4 +28,7 @@ public interface SongVersionRepository extends JpaRepository<SongVersion, Long> 
     WHERE sv.song.artist.id = :artistId
     """)
     List<SongVersion> findByArtistId(@Param("artistId") Long artistId);
+
+    @Query(value = "SELECT * FROM song_versions WHERE song_id = :songId AND deleted_at IS NOT NULL", nativeQuery = true)
+    List<SongVersion> findDeletedBySongId(@Param("songId") Long songId);
 }

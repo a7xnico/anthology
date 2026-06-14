@@ -7,6 +7,7 @@ import com.anthology.enums.NotificationType;
 import com.anthology.enums.Status;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
+import com.anthology.exception.UnauthorizedException;
 import com.anthology.mapper.AlbumMapper;
 import com.anthology.model.Album;
 import com.anthology.model.Artist;
@@ -62,11 +63,24 @@ public class AlbumService {
         return albumMapper.toDTO(albumRepository.save(album));
     }
 
+    public AlbumResponse updateAlbumAsArtist(Long albumId, AlbumUpdateRequest request, Long userId){
+        Artist artist = artistService.findByUserId(userId);
+        Album album = findAlbumById(albumId);
+
+        if (album.getArtist() == null || !album.getArtist().getId().equals(artist.getId()))
+            throw new UnauthorizedException("No tenés permiso para editar este álbum");
+        if (album.getStatus() == Status.APPROVED)
+            throw new UnauthorizedException("No podés editar un álbum ya aprobado");
+
+        return updateAlbum(albumId, request);
+    }
+
     public AlbumResponse updateStatus(Long id, Status status) {
         Album album = findAlbumById(id);
         album.setStatus(status);
         return albumMapper.toDTO(albumRepository.save(album));
     }
+
 
     public List<AlbumResponse> findAllAlbums(){
         return albumRepository.findAll()
@@ -82,6 +96,17 @@ public class AlbumService {
     public void deleteAlbum(Long id){
         Album album = findAlbumById(id);
         albumRepository.delete(album);
+    }
+
+    public void deleteAlbumAsArtist(Long albumId, Long userId){
+        Artist artist = artistService.findByUserId(userId);
+        Album album = findAlbumById(albumId);
+
+        if (album.getArtist() == null || !album.getArtist().getId().equals(artist.getId()))
+            throw new UnauthorizedException("No tenés permiso para eliminar este álbum");
+        if (album.getStatus() == Status.APPROVED)
+            throw new UnauthorizedException("No podés eliminar un álbum ya aprobado");
+        deleteAlbum(albumId);
     }
 
     public Album findAlbumById(Long id){

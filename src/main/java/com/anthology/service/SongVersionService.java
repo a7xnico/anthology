@@ -121,6 +121,28 @@ public class SongVersionService {
         songVersionRepository.save(version);
     }
 
+    public void deleteVersionAsArtist(Long songId, Long versionId, Long userId) {
+        Artist artist = artistService.findByUserId(userId);
+        SongVersion version = findSongVersionById(versionId);
+
+        if (version.getSong().getArtist() == null ||
+                !version.getSong().getArtist().getId().equals(artist.getId()))
+            throw new UnauthorizedException("No tenés permiso para eliminar esta versión");
+
+        if (version.getStatus() == Status.APPROVED)
+            throw new UnauthorizedException("No podés eliminar una versión ya aprobada");
+
+        deleteVersion(songId, versionId);
+    }
+
+    public List<SongVersionResponse> findDeletedVersionsBySongId(Long songId) {
+        songService.findSongById(songId);
+        return songVersionRepository.findDeletedBySongId(songId)
+                .stream()
+                .map(songVersionMapper::toDTO)
+                .toList();
+    }
+
 
     public SongVersion findSongVersionById(Long versionId) {
         return songVersionRepository.findById(versionId)

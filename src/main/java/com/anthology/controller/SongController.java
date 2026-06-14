@@ -77,10 +77,11 @@ public class SongController {
                 .body(songService.updateSong(id, request));
     }
 
-    @Operation(summary = "Editar canción como artista", description = "El artista modifica parcialmente los datos de una canción mientras esta este pendiente")
+    @Operation(summary = "Editar canción como artista", description = "Modifica parcialmente una canción propia pendiente de aprobación")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Canción actualizada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para editar esta canción"),
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @PatchMapping("/artist/{id}")
@@ -109,9 +110,10 @@ public class SongController {
                 .build();
     }
 
-    @Operation(summary = "Eliminar canción como artista", description = "Realiza un borrado lógico de la canción y sus versiones mientras esta este pendiente")
+    @Operation(summary = "Eliminar canción como artista", description = "Realiza un borrado lógico de una canción propia pendiente de aprobación")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Canción eliminada exitosamente"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para eliminar esta canción"),
             @ApiResponse(responseCode = "404", description = "Canción no encontrada")
     })
     @DeleteMapping("/artist/{id}")
@@ -173,8 +175,8 @@ public class SongController {
                 .body(songService.findByInstrument(instrument));
     }
 
-    @Operation(summary = "Buscar mis canciones", description = "Devuelve canciones creadas por el artista")
-    @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente")
+    @Operation(summary = "Mis canciones", description = "Devuelve todas las canciones subidas por el artista autenticado con su estado")
+    @ApiResponse(responseCode = "200", description = "Lista de canciones obtenida exitosamente")
     @GetMapping("/my-songs")
     @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<List<SongResponse>> findMySongs(

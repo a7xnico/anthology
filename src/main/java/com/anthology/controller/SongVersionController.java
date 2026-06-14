@@ -48,10 +48,11 @@ public class SongVersionController {
                 .body(songVersionService.createVersionAsAdmin(songId, instrument, file));
     }
 
-    @Operation(summary = "Crear versión", description = "Sube un archivo MusicXML o Guitar Pro y genera el PDF de la versión a una cancion del artista")
+    @Operation(summary = "Subir versión como artista", description = "Sube un archivo MusicXML o Guitar Pro para una canción propia, queda pendiente de aprobación")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Versión creada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para agregar versiones a esta canción"),
             @ApiResponse(responseCode = "404", description = "Canción no encontrada"),
             @ApiResponse(responseCode = "409", description = "Ya existe una versión para ese instrumento")
     })
@@ -100,11 +101,15 @@ public class SongVersionController {
                 .body(songVersionService.findVersionById(songId, versionId));
     }
 
+    @Operation(summary = "Mis versiones", description = "Devuelve todas las versiones subidas por el artista autenticado con su estado")
+    @ApiResponse(responseCode = "200", description = "Lista de versiones obtenida exitosamente")
     @GetMapping("/api/artist/my-versions")
     @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<List<SongVersionResponse>> findMyVersions(
             @AuthenticationPrincipal CredentialsEntity credentials) {
-        return ResponseEntity.ok(songVersionService.findMyVersions(credentials.getUser().getId()));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songVersionService.findMyVersions(credentials.getUser().getId()));
     }
 
     @Operation(summary = "Actualizar estado", description = "Aprueba o rechaza una versión pendiente")
@@ -127,7 +132,9 @@ public class SongVersionController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SongVersionResponse>> findByStatus(
             @RequestParam Status status) {
-        return ResponseEntity.ok(songVersionService.findByStatus(status));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songVersionService.findByStatus(status));
     }
 
 
@@ -147,7 +154,37 @@ public class SongVersionController {
                 .build();
     }
 
+    @Operation(summary = "Eliminar versión como artista", description = "Realiza un borrado lógico de una versión propia pendiente de aprobación")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Versión eliminada exitosamente"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para eliminar esta versión"),
+            @ApiResponse(responseCode = "404", description = "Versión no encontrada")
+    })
+    @DeleteMapping("/artist/{versionId}")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<Void> deleteVersionAsArtist(
+            @Parameter(description = "ID de la canción") @PathVariable Long songId,
+            @Parameter(description = "ID de la versión") @PathVariable Long versionId,
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        songVersionService.deleteVersionAsArtist(songId, versionId, credentials.getUser().getId());
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 
+    @Operation(summary = "Listar versiones eliminadas", description = "Devuelve todas las versiones eliminadas de una canción")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de versiones eliminadas obtenida exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Canción no encontrada")
+    })
+    @GetMapping("/deleted")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<SongVersionResponse>> findDeletedVersionsBySongId(
+            @PathVariable Long songId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songVersionService.findDeletedVersionsBySongId(songId));
+    }
 
 
 
