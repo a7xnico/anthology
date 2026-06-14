@@ -8,11 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "song_versions")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,9 +32,6 @@ public class SongVersion extends SoftDeleteEntity{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Instrument instrument;
-
-    @Column(name = "difficulty_avg", precision = 3, scale = 2)
-    private BigDecimal difficultyAvg = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

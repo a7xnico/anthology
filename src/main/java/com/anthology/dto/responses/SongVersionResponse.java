@@ -10,7 +10,6 @@ public record SongVersionResponse(
         Long id,
         Long songId,
         Instrument instrument,
-        BigDecimal difficultyAvg,
         Status status,
         String pdfUrl,
         LocalDateTime createdAt

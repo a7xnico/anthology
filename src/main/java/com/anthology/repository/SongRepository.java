@@ -16,6 +16,7 @@ public interface SongRepository extends JpaRepository<Song, Long> {
 
     @Query("""
     SELECT DISTINCT s FROM Song s
+    LEFT JOIN s.album a
     WHERE s.status = 'APPROVED'
     AND (:title IS NULL OR LOWER(s.title) LIKE LOWER(CONCAT('%', :title, '%')))
     AND (:genre IS NULL OR LOWER(s.genre) = LOWER(:genre))
@@ -32,10 +33,14 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     @Query("""
     SELECT DISTINCT s FROM Song s
     JOIN s.songVersions sv
-    WHERE sv.instrument = :instrument
+    WHERE s.status = 'APPROVED'
+    AND sv.instrument = :instrument
+    AND sv.status = 'APPROVED'
     """)
     List<Song> findByInstrument(@Param("instrument") Instrument instrument);
 
     List<Song> findByStatus(Status status);
+
+    List<Song> findByArtistId(Long artistId);
 
 }

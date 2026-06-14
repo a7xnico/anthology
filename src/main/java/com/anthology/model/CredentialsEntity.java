@@ -51,7 +51,7 @@ public class CredentialsEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
         roles.forEach(rol -> authorities.add(
-                new SimpleGrantedAuthority(rol.getRole().name())));
+                new SimpleGrantedAuthority("ROLE_" + rol.getRole().name())));
 
         return authorities;
     }
