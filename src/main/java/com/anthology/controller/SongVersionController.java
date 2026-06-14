@@ -68,6 +68,12 @@ public class SongVersionController {
                 .body(songVersionService.createVersionAsArtist(songId, instrument, file, credentials.getUser().getId()));
     }
 
+
+    @Operation(summary = "Listar versiones de una canción", description = "Devuelve todas las versiones aprobadas de una canción")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de versiones obtenida exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Canción no encontrada")
+    })
     @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<SongVersionResponse>> findVersionsBySongId(
@@ -77,6 +83,11 @@ public class SongVersionController {
                 .body(songVersionService.findVersionsBySongId(songId));
     }
 
+    @Operation(summary = "Listar todas las versiones de una canción", description = "Devuelve todas las versiones de una canción independientemente de su estado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de versiones obtenida exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Canción no encontrada")
+    })
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SongVersionResponse>> findAllVersionsBySongId(
@@ -128,6 +139,11 @@ public class SongVersionController {
                 .body(songVersionService.updateStatus(songId, versionId, status));
     }
 
+    @Operation(summary = "Listar versiones por estado", description = "Devuelve todas las versiones del sistema filtradas por estado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de versiones obtenida exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Estado inválido")
+    })
     @GetMapping("/api/versions/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SongVersionResponse>> findByStatus(

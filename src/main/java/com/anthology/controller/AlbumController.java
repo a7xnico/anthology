@@ -90,6 +90,11 @@ public class AlbumController {
                 .build();
     }
 
+    @Operation(summary = "Actualizar estado de álbum", description = "Aprueba o rechaza un álbum pendiente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Álbum no encontrado")
+    })
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AlbumResponse> updateStatus(
@@ -135,6 +140,11 @@ public class AlbumController {
                 .body(albumService.findMyAlbums(credentials.getUser().getId()));
     }
 
+    @Operation(summary = "Listar álbumes por estado", description = "Devuelve todos los álbumes del sistema filtrados por estado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de álbumes obtenida exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Estado inválido")
+    })
     @GetMapping("/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AlbumResponse>> findByStatus(
