@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 
 public record UserResponse(
-        String userName,
+        String username,
      String email,
      Role role,
      LocalDateTime createdAt
