@@ -87,5 +87,19 @@ public class ArtistController {
         return ResponseEntity.ok(artistService.findByName(stageName));
     }
 
+    @Operation(summary = "Eliminar Artista", description = "Realiza un borrado lógico del Artista ")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Artista eliminado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Artista no encontrado")
+    })
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteArtist(
+            @Parameter(description = "ID del artista") @PathVariable Long id){
+        artistService.deleteArtist(id);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 
 }

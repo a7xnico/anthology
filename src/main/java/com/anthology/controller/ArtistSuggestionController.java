@@ -1,6 +1,7 @@
 package com.anthology.controller;
 
 import com.anthology.dto.requests.ArtistSuggestionRequest;
+import com.anthology.dto.responses.ArtistResponse;
 import com.anthology.dto.responses.ArtistSuggestionResponse;
 import com.anthology.service.ArtistSuggestionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,17 @@ public class ArtistSuggestionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(artistSuggestionService.createArtistSuggestion(artistSuggestionRequest));
     }
 
+    @Operation(summary = "Buscar Sugerencia artista especifico", description = "Devuelve datos de una sugerencia artista especifico buscado por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Sugerencia artista encontrado"),
+            @ApiResponse(responseCode = "404", description = "Sugerencia artista no encontrado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
+    public ResponseEntity<ArtistSuggestionResponse> findById(@Parameter(description = "ID de la sugerencia artista") @PathVariable Long id){
+        return ResponseEntity.ok(artistSuggestionService.findById(id));
+    }
+
     @Operation(summary = "Buscar sugerencias artistas", description = "Busca a todas las sugerencias artistas")
     @ApiResponse(responseCode = "200", description = "Busqueda realizada correctamente")
     @PreAuthorize("hasRole('ADMIN')")
@@ -43,6 +55,7 @@ public class ArtistSuggestionController {
     public ResponseEntity<List<ArtistSuggestionResponse>> findAllArtistsSuggestion(){
         return ResponseEntity.ok(artistSuggestionService.findAll());
     }
+
     @Operation(summary = "Modifica Artistas", description = "Bucas a Artista por Id y modifica sus campos")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Sugerencia Artista actualizada exitosamente"),
@@ -53,6 +66,21 @@ public class ArtistSuggestionController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ArtistSuggestionResponse> updateArtistSuggestion(@Parameter(description = "ID Artista") @PathVariable Long id, @Valid @RequestBody ArtistSuggestionRequest artistSuggestionRequest){
         return ResponseEntity.ok(artistSuggestionService.cambiarEstadoSuggestion(id, artistSuggestionRequest));
+    }
+
+    @Operation(summary = "Eliminar Sugerencia artista", description = "Realiza un borrado lógico de la Sugerencia artista ")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Sugerencia artista eliminado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Sugerencia artista no encontrado")
+    })
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteArtistSuggestion(
+            @Parameter(description = "ID de la Sugerencia artista") @PathVariable Long id){
+        artistSuggestionService.deleteArtistSuggestion(id);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 }

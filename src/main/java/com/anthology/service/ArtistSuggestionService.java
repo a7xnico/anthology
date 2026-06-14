@@ -24,11 +24,12 @@ public class ArtistSuggestionService {
     private final UserService userService;
 
     public ArtistSuggestionResponse createArtistSuggestion(ArtistSuggestionRequest artistSuggestionRequest){
-        ///  User manejado en teoria falta probar
+
         User user = userService.findUserById(artistSuggestionRequest.userId());
 
-
         ArtistSuggestion artistSuggestion = artistSuggestionMapper.toEntity(artistSuggestionRequest);
+
+        artistSuggestion.setUser(user);
 
         return artistSuggestionMapper.toDTO(artistSuggestionRepository.save(artistSuggestion));
     }
@@ -38,6 +39,16 @@ public class ArtistSuggestionService {
         return artistSuggestionRepository.findAll().stream()
                 .map(artistSuggestionMapper::toDTO)
                 .toList();
+    }
+
+
+    public ArtistSuggestion findArtistSuggestionById(Long id){
+        return artistSuggestionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Sugerencia Artista no encontrada"));
+    }
+
+    public ArtistSuggestionResponse findById(Long id){
+        return artistSuggestionMapper.toDTO(findArtistSuggestionById(id));
     }
 
     public ArtistSuggestionResponse cambiarEstadoSuggestion(Long id, ArtistSuggestionRequest artistSuggestionRequest){
@@ -52,6 +63,12 @@ public class ArtistSuggestionService {
         }
 
        return artistSuggestionMapper.toDTO( artistSuggestionRepository.save(artistSuggestion));
+    }
+
+
+    public void deleteArtistSuggestion(Long id){
+        ArtistSuggestion artistSuggestion = findArtistSuggestionById(id);
+        artistSuggestionRepository.delete(artistSuggestion);
     }
 
 

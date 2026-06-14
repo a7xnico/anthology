@@ -3,12 +3,14 @@ spring:
     name: anthology
   
   datasource:
-   # url: jdbc:mysql://localhost:3306/anthologyDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/anthologyDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     #UTN CONNECTION
-    url: jdbc:mysql://172.16.1.64:3306/AnthologyTest
+   # url: jdbc:mysql://172.16.1.64:3306/AnthologyTest
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: bdd1
-    password: bdd1
+    #username: bdd1
+    #password: bdd1
+    username: root
+    password: root
 
   jpa:
     hibernate:
@@ -33,8 +35,8 @@ spring:
 
     # Sitio de generacion de secret-key (https://jwtsecrets.com/)
     # 15 minutos de validacion
-    security:
-      jwt:
-        secret-key: 451cd6fdf7cb8eeb5e91d8c1ef9d5261f76e50c61451e56c05de53540d153b3862124270c9a40424ce6d82ef115cb4c08952ffad3cacaa6f2206159b00ff2a50
-        expiration-ms: 900000
-        refresh-expiration-ms: 604800000
+security:
+  jwt:
+    secret-key: 451cd6fdf7cb8eeb5e91d8c1ef9d5261f76e50c61451e56c05de53540d153b3862124270c9a40424ce6d82ef115cb4c08952ffad3cacaa6f2206159b00ff2a50
+    expiration-ms: 900000
+    refresh-expiration-ms: 604800000
