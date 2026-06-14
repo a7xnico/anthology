@@ -38,10 +38,13 @@ public class ArtistService {
         return artistMapper.toDTO(artistRepository.save(artist));
     }
 
-    public ArtistResponse findById(Long id){
+    public Artist findArtistById(Long id){
         return artistRepository.findById(id)
-                .map(artistMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Artista no encontrado..."));
+    }
+
+    public ArtistResponse findById(Long id){
+        return artistMapper.toDTO(findArtistById(id));
     }
 
     public ArtistResponse findByName(String stageName){
@@ -71,6 +74,10 @@ public class ArtistService {
     public Artist findByUserId(Long userId){
         return artistRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Perfil de artista no encontrado"));
+
+    public void deleteArtist(Long id){
+        Artist artist = findArtistById(id);
+        artistRepository.delete(artist);
     }
 
 }
