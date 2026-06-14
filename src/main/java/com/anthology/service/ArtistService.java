@@ -100,6 +100,11 @@ public class ArtistService {
         return artistMapper.toDTO(artistRepository.save(artist));
     }
 
+
+    public Artist findByUserId(Long userId){
+        return artistRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Perfil de artista no encontrado"));
+    }
     @Transactional
     public void deleteArtist(Long id){
         Artist artist = findArtistById(id);
