@@ -24,7 +24,7 @@ public class PlaylistService {
     private final SongVersionService songVersionService;
 
     public PlaylistResponse create(PlaylistRequest playlistRequest) {
-        if (playlistRepository.exitsByName(playlistRequest.name()))
+        if (playlistRepository.existsByName(playlistRequest.name()))
             throw new DuplicateResourceException("Ya existe un playlist con ese nombre");
 /// Me tiro un mergeConflict revisar luego
 

@@ -25,7 +25,7 @@ public class SongSuggestionService {
     {
 
 
-        if(repository.exitsByIdUserAndArtist(request.title(), request.artistName()))
+        if(repository.existsByTitleAndArtistName(request.title(), request.artistName()))
             throw new DuplicateResourceException("ya existe una sugerencia para esa cancion de ese artista");
         User user=userService.findUserById(request.idUser());
         SongSuggestion songSuggestion=mapper.toEntity(request);
@@ -61,12 +61,13 @@ public class SongSuggestionService {
     {
        SongSuggestion songSuggestion=repository.findByIdAndStatus(id,SongSuggestionStatus.ADDED).orElseThrow(()-> new ResourceNotFoundException("no se encontro el id"));
        songSuggestion.setStatus(SongSuggestionStatus.ADDED);
-       return mapper.toDTO(songSuggestion);
+        return mapper.toDTO(repository.save(songSuggestion));
     }
     public void statusRejected(Long id)
     {
         SongSuggestion songSuggestion=repository.findByIdAndStatus(id,SongSuggestionStatus.REJECTED).orElseThrow(()-> new ResourceNotFoundException("no se encontro el id"));
         songSuggestion.setStatus(SongSuggestionStatus.REJECTED);
+        repository.save(songSuggestion);
         deleateSongSuggestion(id);
     }
 

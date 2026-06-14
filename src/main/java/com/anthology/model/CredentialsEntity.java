@@ -42,7 +42,7 @@ public class CredentialsEntity implements UserDetails {
     )
     private Set<RoleEntity> roles = new HashSet<>();
 
-    @Column(name = "refresh_token",length = 2048,unique = true, nullable
+    @Column(name = "refresh_token",length = 500,unique = true, nullable
             = false)
     private String refreshToken;
 

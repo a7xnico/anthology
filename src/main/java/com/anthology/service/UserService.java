@@ -21,7 +21,7 @@ public class UserService {
     private final UserMapper userMapper;
     public UserResponse createUser(UserRequest userRequest)
     {
-        if(userRepository.exitsByUserName(userRequest.username()))
+        if(userRepository.existsByUsername(userRequest.username()))
             throw new DuplicateResourceException("Ya existe un usuario con ese nombre");
          User user=userMapper.toEntity(userRequest);
          return userMapper.toDTO(userRepository.save(user));

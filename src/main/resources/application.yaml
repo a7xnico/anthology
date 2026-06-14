@@ -14,7 +14,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -40,3 +40,8 @@ security:
     secret-key: 451cd6fdf7cb8eeb5e91d8c1ef9d5261f76e50c61451e56c05de53540d153b3862124270c9a40424ce6d82ef115cb4c08952ffad3cacaa6f2206159b00ff2a50
     expiration-ms: 900000
     refresh-expiration-ms: 604800000
+
+google:
+  drive:
+    credentials-path: file:C:/Users/Usuario/Desktop/credentials.json
+    folder-id: 1Clep2RbWAxNmP8ddgODR7pRPa7d3W-bs

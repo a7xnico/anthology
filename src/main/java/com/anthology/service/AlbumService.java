@@ -9,6 +9,7 @@ import com.anthology.mapper.AlbumMapper;
 import com.anthology.model.Album;
 import com.anthology.repository.AlbumRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
