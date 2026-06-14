@@ -1,6 +1,7 @@
 package com.anthology.dto.responses;
 
 import com.anthology.enums.Instrument;
+import com.anthology.enums.Status;
 
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -14,6 +15,7 @@ public record SongResponse(
         String AlbumTitle,
         Year ReleaseYear,
         List<Instrument> availableInstruments,
+        Status status,
         LocalDateTime createdAt
 ) {
 }

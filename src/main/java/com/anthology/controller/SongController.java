@@ -5,6 +5,7 @@ import com.anthology.dto.requests.SongUpdateRequest;
 import com.anthology.dto.responses.SongResponse;
 import com.anthology.enums.Instrument;
 import com.anthology.enums.Status;
+import com.anthology.model.CredentialsEntity;
 import com.anthology.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +45,22 @@ public class SongController {
                 .body(songService.createSong(request));
     }
 
+    @Operation(summary = "Crear canción", description = "Crea una nueva canción base en el sistema como artista")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Canción creada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "409", description = "Ya existe una canción con ese título y artista")
+    })
+    @PostMapping("/artist")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<SongResponse> createSongAsArtist(
+            @Valid @RequestBody SongRequest request,
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(songService.createSongAsArtist(request, credentials.getUser().getId()));
+    }
+
     @Operation(summary = "Editar canción", description = "Modifica parcialmente los datos de una canción existente")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Canción actualizada exitosamente"),
@@ -59,6 +77,24 @@ public class SongController {
                 .body(songService.updateSong(id, request));
     }
 
+    @Operation(summary = "Editar canción como artista", description = "Modifica parcialmente una canción propia pendiente de aprobación")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Canción actualizada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para editar esta canción"),
+            @ApiResponse(responseCode = "404", description = "Canción no encontrada")
+    })
+    @PatchMapping("/artist/{id}")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<SongResponse> updateSongAsArtist(
+            @Parameter(description = "ID de la canción") @PathVariable Long id,
+            @Valid @RequestBody SongUpdateRequest request,
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(songService.updateSongAsArtist(id, request, credentials.getUser().getId()));
+    }
+
     @Operation(summary = "Eliminar canción", description = "Realiza un borrado lógico de la canción y sus versiones")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Canción eliminada exitosamente"),
@@ -72,6 +108,21 @@ public class SongController {
         return ResponseEntity
                 .noContent()
                 .build();
+    }
+
+    @Operation(summary = "Eliminar canción como artista", description = "Realiza un borrado lógico de una canción propia pendiente de aprobación")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Canción eliminada exitosamente"),
+            @ApiResponse(responseCode = "403", description = "No tenés permiso para eliminar esta canción"),
+            @ApiResponse(responseCode = "404", description = "Canción no encontrada")
+    })
+    @DeleteMapping("/artist/{id}")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<Void> deleteSongAsArtist(
+            @Parameter(description = "ID de la canción") @PathVariable Long id,
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        songService.deleteSongAsArtist(id, credentials.getUser().getId());
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Listar todas las canciones", description = "Devuelve todas las canciones del sistema")
@@ -122,6 +173,15 @@ public class SongController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(songService.findByInstrument(instrument));
+    }
+
+    @Operation(summary = "Mis canciones", description = "Devuelve todas las canciones subidas por el artista autenticado con su estado")
+    @ApiResponse(responseCode = "200", description = "Lista de canciones obtenida exitosamente")
+    @GetMapping("/my-songs")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<List<SongResponse>> findMySongs(
+            @AuthenticationPrincipal CredentialsEntity credentials) {
+        return ResponseEntity.ok(songService.findMySongs(credentials.getUser().getId()));
     }
 
     @Operation(summary = "Listar canciones por estado", description = "Devuelve canciones filtradas por su estado")
