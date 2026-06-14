@@ -67,7 +67,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(
             @Parameter(description = "ID del usuario") @PathVariable Long id){
-        userService.deleateUser(id);
+        userService.deleteUser(id);
         return ResponseEntity
                 .noContent()
                 .build();

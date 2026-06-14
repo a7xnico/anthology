@@ -40,10 +40,9 @@ public class UserService {
 
          User user=userMapper.toEntity(userRequest);
 
-        String rawPassword = userRequest.password();
-        String encodedPassword = passwordEncoder.encode(rawPassword);
+        String encodedPassword = passwordEncoder.encode(userRequest.password());
 
-        user.setPasswordHash(passwordEncoder.encode(rawPassword));
+        user.setPasswordHash(passwordEncoder.encode(encodedPassword));
 
         if (user.getRole() == null) {
             user.setRole(Role.USER);
@@ -56,8 +55,7 @@ public class UserService {
         credentials.setUsername(savedUser.getUsername());
         credentials.setPassword(encodedPassword);
         credentials.setUser(savedUser);
-
-        credentials.setRefreshToken("TOKEN_TEMPORAL_PARA_CREACION");
+        credentials.setRefreshToken("");
 
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByRole(Role.USER).orElseThrow(()-> new ResourceNotFoundException("Rol no entontrado..."));
@@ -74,7 +72,8 @@ public class UserService {
         User user=findUserById(id);
         if(request.username()!= null)user.setUsername(request.username());
         if(request.email()!= null)user.setEmail(request.email());
-        if(request.password()!= null)user.setPasswordHash(request.password());
+        if (request.password() != null) user.setPasswordHash(
+                passwordEncoder.encode(request.password()));
 
         return userMapper.toDTO(userRepository.save(user));
     }
@@ -100,9 +99,15 @@ public class UserService {
         return userMapper.toDTO(findUserById(id));
     }
 
-    public void deleateUser(Long id)
-    {
+    @Transactional
+    public void deleteUser(Long id) {
         User user=findUserById(id);
+
+        ///BORRAR CREDENCIALES
+        credentialsRepository.findByUsername(user.getUsername())
+                .ifPresent(credentialsRepository::delete);
+
+
         userRepository.delete(user);
     }
 
