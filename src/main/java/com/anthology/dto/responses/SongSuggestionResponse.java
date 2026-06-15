@@ -6,7 +6,7 @@ import lombok.Builder;
 
 import java.time.LocalDateTime;
 
-@Builder
+
 public record SongSuggestionResponse(
         Long id,
         Long idUser,

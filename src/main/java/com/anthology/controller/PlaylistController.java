@@ -62,7 +62,7 @@ public class PlaylistController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePlaylist(
             @Parameter(description = "ID del playlist") @PathVariable Long id){
-        playlistService.deleatePlaylist(id);
+        playlistService.deletePlaylist(id);
         return ResponseEntity
                 .noContent()
                 .build();

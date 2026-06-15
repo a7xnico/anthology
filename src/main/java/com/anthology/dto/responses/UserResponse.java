@@ -6,9 +6,10 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-@Builder
+
 
 public record UserResponse(
+        Long id,
         String username,
      String email,
      Role role,

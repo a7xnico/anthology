@@ -2,6 +2,7 @@ package com.anthology.controller;
 
 
 import com.anthology.dto.requests.ArtistRequest;
+import com.anthology.dto.requests.ArtistUpdateRequest;
 import com.anthology.dto.responses.ArtistResponse;
 import com.anthology.service.ArtistService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,11 +50,12 @@ public class ArtistController {
             @ApiResponse(responseCode = "400", description = "Datos de entrada invalido"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ArtistResponse> updateArtist(@Parameter(description = "Id del Artista") @PathVariable Long id, @Valid @RequestBody ArtistRequest artistRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(artistService.updateById(id,artistRequest));
+    public ResponseEntity<ArtistResponse> updateArtist(@Parameter(description = "Id del Artista") @PathVariable Long id, @Valid @RequestBody ArtistUpdateRequest artistUpdateRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(artistService.updateById(id, artistUpdateRequest));
     }
+
 
 
 
@@ -83,7 +86,7 @@ public class ArtistController {
     })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/buscar")
-    public ResponseEntity<ArtistResponse> findByArtistStageName(@Parameter(description = "Stage name del Artista")@RequestParam String stageName){
+    public ResponseEntity<ArtistResponse> findByArtistStageName(@Parameter(description = "Stage name del Artista")@RequestParam @NotBlank String stageName){
         return ResponseEntity.ok(artistService.findByName(stageName));
     }
 

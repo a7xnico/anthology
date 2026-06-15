@@ -55,7 +55,7 @@ public class UserService {
         credentials.setUsername(savedUser.getUsername());
         credentials.setPassword(encodedPassword);
         credentials.setUser(savedUser);
-        credentials.setRefreshToken("");
+        credentials.setRefreshToken(null);
 
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByRole(Role.USER).orElseThrow(()-> new ResourceNotFoundException("Rol no entontrado..."));

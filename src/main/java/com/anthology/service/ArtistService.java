@@ -2,6 +2,7 @@ package com.anthology.service;
 
 
 import com.anthology.dto.requests.ArtistRequest;
+import com.anthology.dto.requests.ArtistUpdateRequest;
 import com.anthology.dto.responses.ArtistResponse;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -88,14 +90,14 @@ public class ArtistService {
                 .toList();
     }
 
-    public ArtistResponse updateById( Long id, ArtistRequest artistRequest){
+    public ArtistResponse updateById(Long id, ArtistUpdateRequest artistUpdateRequest){
         Artist artist = artistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Artista No encontrado"));
 
-        if(artistRequest.biography() != null) artist.setBiography(artistRequest.biography());
-        if(artistRequest.instagram() != null) artist.setInstagram(artistRequest.instagram());
-        if(artistRequest.spotify() != null) artist.setSpotify(artistRequest.spotify());
-        if(artistRequest.youtube() != null) artist.setYoutube(artistRequest.youtube());
+        if(artistUpdateRequest.biography() != null) artist.setBiography(artistUpdateRequest.biography());
+        if(artistUpdateRequest.instagram() != null) artist.setInstagram(artistUpdateRequest.instagram());
+        if(artistUpdateRequest.spotify() != null) artist.setSpotify(artistUpdateRequest.spotify());
+        if(artistUpdateRequest.youtube() != null) artist.setYoutube(artistUpdateRequest.youtube());
 
         return artistMapper.toDTO(artistRepository.save(artist));
     }
@@ -121,6 +123,9 @@ public class ArtistService {
         artistRepository.delete(artist);
     }
 
+    public Optional<Artist> findByStageNameOptional(String stageName) {
+        return artistRepository.findByStageNameIgnoreCase(stageName);
+    }
 
 
 }

@@ -34,6 +34,9 @@ public class SongService {
 
         Song song = songMapper.toEntity(request);
 
+        artistService.findByStageNameOptional(request.artistName())
+                .ifPresent(song::setArtist);
+
         if (request.albumId() != null)
             song.setAlbum(albumService.findAlbumById(request.albumId()));
 

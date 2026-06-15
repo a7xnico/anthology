@@ -32,6 +32,10 @@ public class AlbumService {
             throw new DuplicateResourceException("Ya existe un álbum con ese título y artista");
 
         Album album = albumMapper.toEntity(request);
+
+        artistService.findByStageNameOptional(request.artistName())
+                .ifPresent(album::setArtist);
+
         return albumMapper.toDTO(albumRepository.save(album));
     }
 
