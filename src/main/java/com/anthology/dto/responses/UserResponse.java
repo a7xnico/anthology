@@ -6,10 +6,11 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-@Builder
+
 
 public record UserResponse(
-        String userName,
+        Long id,
+        String username,
      String email,
      Role role,
      LocalDateTime createdAt

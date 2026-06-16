@@ -13,6 +13,7 @@ import com.anthology.model.Album;
 import com.anthology.model.Artist;
 import com.anthology.repository.AlbumRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,10 @@ public class AlbumService {
             throw new DuplicateResourceException("Ya existe un álbum con ese título y artista");
 
         Album album = albumMapper.toEntity(request);
+
+        artistService.findByStageNameOptional(request.artistName())
+                .ifPresent(album::setArtist);
+
         return albumMapper.toDTO(albumRepository.save(album));
     }
 

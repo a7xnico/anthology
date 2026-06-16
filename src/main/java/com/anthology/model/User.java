@@ -25,7 +25,6 @@ public class User extends SoftDeleteEntity{
     private Long id;
 
 
-    @Size(min = 3, max = 50)
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
@@ -39,6 +38,6 @@ public class User extends SoftDeleteEntity{
     @Column(nullable = false)
     private Role role = Role.USER;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Playlist> playlists = new ArrayList<>();
 }

@@ -23,12 +23,19 @@ import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+
 public class GoogleDriveService {
 
     private final GoogleDriveConfig googleDriveConfig;
     private final ResourceLoader resourceLoader;
     private Drive driveClient;
+
+    // Constructor manual solo con las dependencias reales
+    public GoogleDriveService(GoogleDriveConfig googleDriveConfig,
+                              ResourceLoader resourceLoader) {
+        this.googleDriveConfig = googleDriveConfig;
+        this.resourceLoader = resourceLoader;
+    }
 
     @PostConstruct
     public void initDriveCliente(){
@@ -49,9 +56,9 @@ public class GoogleDriveService {
                     .setApplicationName("musicsheets")
                     .build();
 
-        } catch (Exception e){
-            log.error("Error al inicializar Google Drive client: {}", e.getMessage());
-            throw new RuntimeException("No se pudo conectar con Google Drive");
+        } catch (Exception e) {
+            log.error("Error al inicializar Google Drive client", e);
+            throw new RuntimeException("No se pudo conectar con Google Drive", e);
         }
     }
 

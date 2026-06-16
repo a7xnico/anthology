@@ -16,8 +16,8 @@ public interface SongMapper {
     @Mapping(target = "album", ignore = true)
     Song toEntity(SongRequest songRequest);
 
-    @Mapping(target = "albumTitle", source = "album.title")
-    @Mapping(target = "releaseYear", source = "album.releaseYear")
+    @Mapping(target = "AlbumTitle", source = "album.title")
+    @Mapping(target = "ReleaseYear", source = "album.releaseYear")
     @Mapping(target = "availableInstruments", source = "songVersions")
     SongResponse toDTO(Song song);
 

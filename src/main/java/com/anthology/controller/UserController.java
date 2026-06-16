@@ -51,7 +51,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @PreAuthorize("isAuthenticated()")
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserResponse>updateUser(@Parameter(description = "ID del usuario")@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request)
     {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, request));
@@ -67,7 +67,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(
             @Parameter(description = "ID del usuario") @PathVariable Long id){
-        userService.deleateUser(id);
+        userService.deleteUser(id);
         return ResponseEntity
                 .noContent()
                 .build();
