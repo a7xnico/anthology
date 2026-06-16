@@ -31,10 +31,14 @@ public class CloudinaryService {
 
     public String uploadPdf(byte[] pdfBytes, String filename){
         try {
+            String publicId = filename.replace(".pdf", "") + "_" + System.currentTimeMillis();
+
             Map uploadResult = cloudinary.uploader().upload(pdfBytes, ObjectUtils.asMap(
                     "resource_type", "raw",
-                    "public_id", filename,
-                    "format", "pdf"
+                    "public_id", publicId,
+                    "format", "pdf",
+                    "access_mode", "public",
+                    "type", "upload"
             ));
             return uploadResult.get("public_id").toString();
         }catch (IOException e){
@@ -44,10 +48,18 @@ public class CloudinaryService {
     }
 
     public String buildFileUrl(String publicId) {
-        return cloudinary.url()
-                .resourceType("raw")
-                .format("pdf")
-                .generate(publicId);
+        try {
+            long expiresAt = System.currentTimeMillis() / 1000 + (60 * 60 * 24 * 7);
+            Map options = ObjectUtils.asMap(
+                    "resource_type", "raw",
+                    "type", "upload",
+                    "expires_at", expiresAt
+            );
+            return cloudinary.privateDownload(publicId, "pdf", options);
+        } catch (Exception e) {
+            log.error("Error al generar URL de descarga: {}", e.getMessage());
+            throw new FileConversionException("Error al generar URL de descarga");
+        }
     }
 
     public void deleteFile(String publicId) {
