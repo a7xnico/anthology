@@ -32,7 +32,7 @@ public class ArtistSuggestionController {
             @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos"),
     })
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ArtistSuggestionResponse> createArtistSuggestion(@Valid @RequestBody ArtistSuggestionRequest artistSuggestionRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(artistSuggestionService.createArtistSuggestion(artistSuggestionRequest));
     }
@@ -56,7 +56,7 @@ public class ArtistSuggestionController {
         return ResponseEntity.ok(artistSuggestionService.findAll());
     }
 
-    @Operation(summary = "Modifica Artistas", description = "Bucas a Artista por Id y modifica sus campos")
+    @Operation(summary = "Modifica Artistas", description = "Buscas a Artista por Id y modifica sus campos")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Sugerencia Artista actualizada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos"),
