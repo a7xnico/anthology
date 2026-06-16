@@ -26,13 +26,6 @@ public class MuseScoreService {
         if (originalFilename == null || originalFilename.isBlank())
             throw new FileConversionException("El archivo no tiene un nombre válido");
 
-        if(originalFilename.toLowerCase().endsWith(".pdf"))
-            try{
-                return file.getBytes();
-            } catch (IOException e) {
-                throw new FileConversionException("Error al leer el archivo PDF");
-            }
-
         validateFileExtensions(originalFilename);
 
         Path tempDirectory = null;
@@ -88,7 +81,7 @@ public class MuseScoreService {
 
     private void validateFileExtensions(String filename){
         String extension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
-        List<String> validExtensions = List.of(".musicxml", ".xml", ".gp", ".gpx", ".gp5", ".pdf");
+        List<String> validExtensions = List.of(".musicxml", ".xml", ".gp", ".gpx", ".gp5");
 
         if (!validExtensions.contains(extension))
             throw new FileConversionException("Formato de archivo no soportado, Use MusicXML o GuitarPro");

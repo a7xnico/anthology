@@ -38,8 +38,8 @@ public class SongVersion extends SoftDeleteEntity{
     private Status status = Status.APPROVED;
 
     @NotBlank
-    @Column(name = "pdf_drive_id", nullable = false, length = 100)
-    private String pdfDriveId;
+    @Column(name = "pdf_public_id", nullable = false, length = 100)
+    private String pdfPublicId;
 
     @NotBlank
     @Column(name = "pdf_url", nullable = false, length = 500)

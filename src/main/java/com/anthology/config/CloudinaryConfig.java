@@ -8,8 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "google.drive")
-public class GoogleDriveConfig {
-    private String credentialsPath;
-    private String folderId;
+@ConfigurationProperties(prefix = "cloudinary")
+public class CloudinaryConfig {
+    private String cloudName;
+    private String apiKey;
+    private String apiSecret;
 }
