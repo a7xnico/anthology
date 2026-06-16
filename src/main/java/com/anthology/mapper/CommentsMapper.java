@@ -3,7 +3,9 @@ package com.anthology.mapper;
 import com.anthology.dto.requests.CommentsRequest;
 import com.anthology.dto.responses.CommentsResponse;
 import com.anthology.model.Comment;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommentsMapper {
     public Comment toEntity(CommentsRequest dto)
     {

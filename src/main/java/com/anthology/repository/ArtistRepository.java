@@ -9,7 +9,11 @@ import java.util.Optional;
 public interface ArtistRepository extends JpaRepository<Artist, Long> {
     boolean existsByStageName(String stageName);
 
-    Optional<Artist>findByStageNameIgnoreCase(String stageName);
+    boolean existsByUserId(Long userId);
 
     Optional<Artist> findByUserId(Long id);
+
+    Optional<Artist>findByStageNameIgnoreCase(String stageName);
+
+
 }

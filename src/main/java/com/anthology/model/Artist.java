@@ -1,5 +1,6 @@
 package com.anthology.model;
 
+import com.anthology.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,8 +26,7 @@ public class Artist extends BaseEntity{
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @NotBlank
-    @Column(name = "stage_name", nullable = false)
+    @Column(name = "stage_name", nullable = false, unique = true)
     private String stageName;
 
     @Column(columnDefinition = "TEXT")
@@ -38,7 +38,5 @@ public class Artist extends BaseEntity{
 
     private String youtube;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
 
 }
