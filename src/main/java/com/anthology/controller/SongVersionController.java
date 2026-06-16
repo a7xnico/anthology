@@ -29,7 +29,10 @@ public class SongVersionController {
 
     private final SongVersionService songVersionService;
 
-    @Operation(summary = "Crear versión", description = "Sube un archivo MusicXML o Guitar Pro y genera el PDF de la versión")
+    @Operation(
+            summary = "Crear versión",
+            description = "Permite subir un archivo MusicXML o Guitar Pro para generar el PDF de la versión. Puede subirse un archivo pdf directamente de manera alternativa"
+    )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Versión creada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
@@ -48,7 +51,10 @@ public class SongVersionController {
                 .body(songVersionService.createVersionAsAdmin(songId, instrument, file));
     }
 
-    @Operation(summary = "Subir versión como artista", description = "Sube un archivo MusicXML o Guitar Pro para una canción propia, queda pendiente de aprobación")
+    @Operation(
+            summary = "Subir versión como artista",
+            description = "Permite subir un archivo MusicXML o Guitar Pro para una canción propia y generar el PDF de la versión. Puede subirse directamente un archivo PDF ya generado. La versión queda pendiente de aprobación."
+    )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Versión creada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),

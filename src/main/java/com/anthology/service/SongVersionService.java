@@ -25,7 +25,7 @@ public class SongVersionService {
     private final SongVersionMapper songVersionMapper;
     private final SongService songService;
     private final MuseScoreService museScoreService;
-    private final GoogleDriveService googleDriveService;
+    private final CloudinaryService cloudinaryService;
     private final ArtistService artistService;
     private final NotificationService notificationService;
 
@@ -38,14 +38,14 @@ public class SongVersionService {
         byte[] pdfBytes = museScoreService.convertToPdf(file);
 
         String pdfFilename = song.getTitle() + "_" + instrument + ".pdf";
-        String pdfDriveId = googleDriveService.uploadPdf(pdfBytes, pdfFilename);
-        String pdfUrl = googleDriveService.buildFileUrl(pdfDriveId);
+        String pdfPublicId = cloudinaryService.uploadPdf(pdfBytes, pdfFilename);
+        String pdfUrl = cloudinaryService.buildFileUrl(pdfPublicId);
 
         SongVersion version = new SongVersion();
         version.setSong(song);
         version.setInstrument(instrument);
         version.setStatus(status);
-        version.setPdfDriveId(pdfDriveId);
+        version.setPdfPublicId(pdfPublicId);
         version.setPdfUrl(pdfUrl);
 
         return songVersionMapper.toDTO(songVersionRepository.save(version));
