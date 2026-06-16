@@ -3,6 +3,7 @@ package com.anthology.controller;
 import com.anthology.dto.requests.ArtistSuggestionRequest;
 import com.anthology.dto.responses.ArtistResponse;
 import com.anthology.dto.responses.ArtistSuggestionResponse;
+import com.anthology.enums.Status;
 import com.anthology.service.ArtistSuggestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,7 +57,16 @@ public class ArtistSuggestionController {
         return ResponseEntity.ok(artistSuggestionService.findAll());
     }
 
-    @Operation(summary = "Modifica Artistas", description = "Buscas a Artista por Id y modifica sus campos")
+    @Operation(summary = "Buscar sugerencias artistas por status", description = "Busca a todas las sugerencias artistas por status")
+    @ApiResponse(responseCode = "200", description = "Busqueda realizada correctamente")
+    @GetMapping("/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ArtistSuggestionResponse>> findByStatus(
+            @RequestParam Status status) {
+        return ResponseEntity.ok(artistSuggestionService.findByStatus(status));
+    }
+
+    @Operation(summary = "Modifica Artistas", description = "Buscas a Artista por Id y le pasa el status a modificar")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Sugerencia Artista actualizada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos"),
@@ -64,8 +74,8 @@ public class ArtistSuggestionController {
     })
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ArtistSuggestionResponse> updateArtistSuggestion(@Parameter(description = "ID Artista") @PathVariable Long id, @Valid @RequestBody ArtistSuggestionRequest artistSuggestionRequest){
-        return ResponseEntity.ok(artistSuggestionService.cambiarEstadoSuggestion(id, artistSuggestionRequest));
+    public ResponseEntity<ArtistSuggestionResponse> updateArtistSuggestion(@PathVariable Long id, @RequestParam Status status) {
+        return ResponseEntity.ok(artistSuggestionService.cambiarEstadoSuggestion(id, status));
     }
 
     @Operation(summary = "Eliminar Sugerencia artista", description = "Realiza un borrado lógico de la Sugerencia artista ")

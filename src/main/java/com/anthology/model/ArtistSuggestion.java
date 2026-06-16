@@ -2,7 +2,6 @@ package com.anthology.model;
 
 import com.anthology.enums.Status;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,6 @@ public class ArtistSuggestion extends BaseEntity{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotBlank
     @Column(name = "stage_name", nullable = false)
     private String stageName;
 
@@ -32,11 +30,10 @@ public class ArtistSuggestion extends BaseEntity{
     private String biography;
 
     private String instagram;
-
     private String spotify;
-
     private String youtube;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status = Status.PENDING;
 }
