@@ -6,7 +6,6 @@ import com.anthology.enums.Status;
 import com.anthology.exception.ResourceNotFoundException;
 import com.anthology.exception.SystemRuleException;
 import com.anthology.mapper.ArtistSuggestionMapper;
-import com.anthology.model.Artist;
 import com.anthology.model.ArtistSuggestion;
 import com.anthology.model.User;
 import com.anthology.repository.ArtistSuggestionRepository;
@@ -30,6 +29,7 @@ public class ArtistSuggestionService {
         ArtistSuggestion artistSuggestion = artistSuggestionMapper.toEntity(artistSuggestionRequest);
 
         artistSuggestion.setUser(user);
+        artistSuggestion.setStatus(Status.PENDING);
 
         return artistSuggestionMapper.toDTO(artistSuggestionRepository.save(artistSuggestion));
     }
@@ -47,22 +47,28 @@ public class ArtistSuggestionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Sugerencia Artista no encontrada"));
     }
 
+    public List<ArtistSuggestionResponse> findByStatus(Status status) {
+        return artistSuggestionRepository.findByStatus(status).stream()
+                .map(artistSuggestionMapper::toDTO)
+                .toList();
+    }
+
     public ArtistSuggestionResponse findById(Long id){
         return artistSuggestionMapper.toDTO(findArtistSuggestionById(id));
     }
 
-    public ArtistSuggestionResponse cambiarEstadoSuggestion(Long id, ArtistSuggestionRequest artistSuggestionRequest){
-        ArtistSuggestion artistSuggestion = artistSuggestionRepository.findById(artistSuggestionRequest.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("ArtistSuggestion no encontrada..."));
+    public ArtistSuggestionResponse cambiarEstadoSuggestion(Long id,Status nuevoEstado){
 
-        if (artistSuggestion.getStatus() == Status.REJECTED){
-            throw new SystemRuleException("Sugerencia Artista ya fue rechazada...");
-        }
-        if (artistSuggestion.getStatus() == Status.PENDING){
-            artistSuggestion.setStatus(Status.APPROVED);
-        }
+        ArtistSuggestion artistSuggestion = findArtistSuggestionById(id);
 
-       return artistSuggestionMapper.toDTO( artistSuggestionRepository.save(artistSuggestion));
+        if (artistSuggestion.getStatus() != Status.PENDING)
+            throw new SystemRuleException("Solo se pueden cambiar sugerencias en estado PENDING");
+
+        artistSuggestion.setStatus(nuevoEstado);
+
+        return artistSuggestionMapper.toDTO(artistSuggestionRepository.save(artistSuggestion));
+
+
     }
 
 
