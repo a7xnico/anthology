@@ -73,11 +73,11 @@ public class ArtistService {
 
     public Artist findByUserId(Long userId){
         return artistRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Perfil de artista no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Perfil de artista no encontrado"));}
 
     public void deleteArtist(Long id){
         Artist artist = findArtistById(id);
         artistRepository.delete(artist);
     }
-
 }
+
