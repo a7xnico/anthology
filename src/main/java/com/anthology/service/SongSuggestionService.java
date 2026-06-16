@@ -30,6 +30,7 @@ public class SongSuggestionService {
         User user=userService.findUserById(request.idUser());
         SongSuggestion songSuggestion=mapper.toEntity(request);
         songSuggestion.setUser(user);
+        songSuggestion.setStatus(SongSuggestionStatus.PENDING);
         return mapper.toDTO(repository.save(songSuggestion));
 
     }
@@ -59,16 +60,16 @@ public class SongSuggestionService {
     }
     public SongSuggestionResponse statusAdded(Long id)
     {
-       SongSuggestion songSuggestion=repository.findByIdAndStatus(id,SongSuggestionStatus.ADDED).orElseThrow(()-> new ResourceNotFoundException("no se encontro el id"));
+       SongSuggestion songSuggestion=findSongSuggestionByid(id);
        songSuggestion.setStatus(SongSuggestionStatus.ADDED);
         return mapper.toDTO(repository.save(songSuggestion));
     }
-    public void statusRejected(Long id)
+    public SongSuggestionResponse statusRejected(Long id)
     {
-        SongSuggestion songSuggestion=repository.findByIdAndStatus(id,SongSuggestionStatus.REJECTED).orElseThrow(()-> new ResourceNotFoundException("no se encontro el id"));
+        SongSuggestion songSuggestion=findSongSuggestionByid(id);
         songSuggestion.setStatus(SongSuggestionStatus.REJECTED);
         repository.save(songSuggestion);
-        deleateSongSuggestion(id);
+        return mapper.toDTO(repository.save(songSuggestion));
     }
 
 }

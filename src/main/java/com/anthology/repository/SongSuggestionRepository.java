@@ -10,5 +10,4 @@ import java.util.Optional;
 @Repository
 public interface SongSuggestionRepository extends JpaRepository<SongSuggestion, Long> {
     boolean existsByTitleAndArtistName(String title, String artistName);
-    Optional<SongSuggestion>findByIdAndStatus(Long id, SongSuggestionStatus status);
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/songsVersions")
+@RequestMapping("/api/songsSugestions")
 @AllArgsConstructor
 public class SongSuggestionController {
     private final SongSuggestionService service;
@@ -60,14 +60,11 @@ public class SongSuggestionController {
             @ApiResponse(responseCode = "204", description = "sugerencia eliminada y rechazada exitosamente"),
             @ApiResponse(responseCode = "404", description = "sugerencia no encontrada")
     })
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> statusRejected(
+    public ResponseEntity<SongSuggestionResponse> statusRejected(
             @Parameter(description = "ID de la sugerencia") @PathVariable Long id){
-        service.statusRejected(id);
-        return ResponseEntity
-                .noContent()
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(service.statusRejected(id));
     }
     @PatchMapping("/{id}/add")
     @PreAuthorize("hasRole('ADMIN')")
@@ -75,6 +72,20 @@ public class SongSuggestionController {
         SongSuggestionResponse songSuggestionResponse = service.statusAdded(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(songSuggestionResponse);
+    }
+    @Operation(summary = "Eliminar sugerencia de cancion", description = "Realiza un borrado lógico de sugerencia de canción ")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Sugerencia de Canción eliminada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Sugerencia de Canción no encontrada")
+    })
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteSongSuggestion(
+            @Parameter(description = "ID de la sugerencia de canción") @PathVariable Long id){
+        service.deleateSongSuggestion(id);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 }
