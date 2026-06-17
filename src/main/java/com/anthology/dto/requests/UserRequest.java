@@ -3,6 +3,7 @@ package com.anthology.dto.requests;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Schema(description = "DTo utilizado para crear usuarios en el sistema")
 public record UserRequest(
@@ -28,6 +29,7 @@ String email,
 
 )
 @NotBlank(message = "la contraseña no puede estar vacia")
+@Size(min = 4, message = "La password debe tener al menos 4 caracteres")
 String password
 
 
