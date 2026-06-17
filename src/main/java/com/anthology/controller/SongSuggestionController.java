@@ -28,7 +28,7 @@ public class SongSuggestionController {
             @ApiResponse(responseCode = "409", description = "Ya existe una sugerencia con ese nombre")
     })
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<SongSuggestionResponse> createSongSuggestion(@Valid @RequestBody SongSuggestionRequest request)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
