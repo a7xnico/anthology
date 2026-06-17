@@ -33,7 +33,7 @@ public class PlaylistController {
             @ApiResponse(responseCode = "409", description = "Ya existe un playlist con ese nombre")
     })
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PlaylistResponse> createPlaylist(@Valid @RequestBody PlaylistRequest request)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body((playlistService.create(request)));
@@ -45,7 +45,7 @@ public class PlaylistController {
             @ApiResponse(responseCode = "404", description = "Playlist no encontrado")
     })
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PlaylistResponse>updatePlaylist(@Parameter(description = "ID del playlist")@PathVariable Long id, @Valid @RequestBody PlaylistUpdateRequest request)
     {
         return ResponseEntity.status(HttpStatus.OK).body(playlistService.updatePlaylist(id,request));
@@ -59,7 +59,7 @@ public class PlaylistController {
             @ApiResponse(responseCode = "404", description = "Playlist no encontrado")
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deletePlaylist(
             @Parameter(description = "ID del playlist") @PathVariable Long id){
         playlistService.deletePlaylist(id);

@@ -11,6 +11,7 @@ import java.util.List;
 
 public record PlaylistResponse(
          Long id,
+         Long idUser,
          String name,
          boolean isDefault,
          LocalDateTime createdAt

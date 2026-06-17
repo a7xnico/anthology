@@ -31,6 +31,7 @@ public class PlaylistService {
 
         Playlist playlist=playlistMapper.toEntity(playlistRequest);
         playlist.setUser(user);
+        playlist.setIsDefault(true);
         return playlistMapper.toDTO(playlistRepository.save(playlist));
     }
 
