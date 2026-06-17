@@ -43,7 +43,7 @@ public class ArtistSuggestionController {
             @ApiResponse(responseCode = "200", description = "Sugerencia artista encontrado"),
             @ApiResponse(responseCode = "404", description = "Sugerencia artista no encontrado")
     })
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ArtistSuggestionResponse> findById(@Parameter(description = "ID de la sugerencia artista") @PathVariable Long id){
         return ResponseEntity.ok(artistSuggestionService.findById(id));
