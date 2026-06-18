@@ -22,7 +22,7 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private Boolean read = false;
 
     @Enumerated(EnumType.STRING)

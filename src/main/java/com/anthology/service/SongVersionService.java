@@ -90,7 +90,12 @@ public class SongVersionService {
 
     public SongVersionResponse findVersionById(Long songId, Long versionId){
         songService.findSongById(songId);
-        return songVersionMapper.toDTO(findSongVersionById(versionId));
+        SongVersion version = findSongVersionById(versionId);
+
+        if (!version.getSong().getId().equals(songId))
+            throw new ResourceNotFoundException("La versión no pertenece a esta canción");
+
+        return songVersionMapper.toDTO(version);
     }
 
     public SongVersionResponse updateStatus(Long songId, Long versionId, Status status) {

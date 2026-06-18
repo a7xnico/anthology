@@ -10,7 +10,6 @@ public record AlbumResponse(
         String title,
         String artistName,
         Year releaseYear,
-        Status status,
-        LocalDateTime createdAt
+        Status status
 ) {
 }
