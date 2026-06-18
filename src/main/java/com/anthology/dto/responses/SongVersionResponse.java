@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 public record SongVersionResponse(
         Long id,
         Long songId,
+        String songTitle,
         Instrument instrument,
         Status status,
-        String pdfUrl,
-        LocalDateTime createdAt
+        String pdfUrl
 ) {
 }
