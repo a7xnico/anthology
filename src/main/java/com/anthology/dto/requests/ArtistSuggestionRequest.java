@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 public record ArtistSuggestionRequest(
 
         @Schema(
-                description = "el id del ususario",
+                description = "el id del usuario",
                 example = "3"
         )
         Long userId,

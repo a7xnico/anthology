@@ -102,7 +102,6 @@ public class ArtistService {
         return artistMapper.toDTO(artistRepository.save(artist));
     }
 
-
     public Artist findByUserId(Long userId){
         return artistRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Perfil de artista no encontrado"));
@@ -111,7 +110,6 @@ public class ArtistService {
     public void deleteArtist(Long id){
         Artist artist = findArtistById(id);
 
-
         credentialsRepository.findByUsername(artist.getUser().getUsername())
                 .ifPresent(credentials -> {
                     credentials.getRoles().removeIf(
@@ -119,13 +117,11 @@ public class ArtistService {
                     );
                     credentialsRepository.save(credentials);
                 });
-
         artistRepository.delete(artist);
     }
 
     public Optional<Artist> findByStageNameOptional(String stageName) {
         return artistRepository.findByStageNameIgnoreCase(stageName);
     }
-
 
 }
