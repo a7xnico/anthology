@@ -50,7 +50,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse>updateUser(@Parameter(description = "ID del usuario")@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request)
     {
@@ -76,12 +76,22 @@ public class UserController {
 
     @Operation(summary = "Listar usuarios", description = "Devuelve todas los usuarios del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAllUsers(){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findAllUsers());
+    }
+
+    @Operation(summary = "Listar usuarios por Usuario", description = "Devuelve todas los usuarios del sistema excluyendo al Admin")
+    @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user")
+    public ResponseEntity<List<UserResponse>> findAllUsersByUser(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.findAllUsersByUser());
     }
 
 

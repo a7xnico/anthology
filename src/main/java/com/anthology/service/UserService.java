@@ -92,8 +92,17 @@ public class UserService {
                 .stream()
                 .map(userMapper::toDTO)
                 .toList();
-
     }
+
+    public List<UserResponse>findAllUsersByUser(){
+        return userRepository
+                .findByRoleNot(Role.ADMIN)
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
+    }
+
+
     public UserResponse findById(Long id)
     {
         return userMapper.toDTO(findUserById(id));

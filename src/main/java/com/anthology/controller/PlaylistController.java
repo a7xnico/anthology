@@ -68,12 +68,9 @@ public class PlaylistController {
                 .build();
     }
 
-
-
-
     @Operation(summary = "Listar playlist", description = "Devuelve todas los playlist del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de playlist obtenida exitosamente")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> findAllPlaylist(){
         return ResponseEntity

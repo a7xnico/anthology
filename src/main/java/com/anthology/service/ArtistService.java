@@ -31,6 +31,7 @@ public class ArtistService {
     private final RoleRepository roleRepository;
 
 
+
     @Transactional
     public ArtistResponse createArtist(ArtistRequest artistRequest){
 
@@ -98,6 +99,16 @@ public class ArtistService {
         if(artistUpdateRequest.instagram() != null) artist.setInstagram(artistUpdateRequest.instagram());
         if(artistUpdateRequest.spotify() != null) artist.setSpotify(artistUpdateRequest.spotify());
         if(artistUpdateRequest.youtube() != null) artist.setYoutube(artistUpdateRequest.youtube());
+
+        return artistMapper.toDTO(artistRepository.save(artist));
+    }
+    public ArtistResponse updateMyArtist(Long userID, ArtistUpdateRequest request){
+        Artist artist = artistRepository.findByUserId(userID)
+                .orElseThrow(() -> new ResourceNotFoundException("Perfil de artista no encontrado"));
+        if (request.biography() != null) artist.setBiography(request.biography());
+        if (request.instagram() != null) artist.setInstagram(request.instagram());
+        if (request.spotify() != null) artist.setSpotify(request.spotify());
+        if (request.youtube() != null) artist.setYoutube(request.youtube());
 
         return artistMapper.toDTO(artistRepository.save(artist));
     }

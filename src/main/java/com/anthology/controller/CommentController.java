@@ -63,7 +63,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CommentsResponse> findById(
             @Parameter(description = "ID del comentario") @PathVariable Long id){
         return ResponseEntity

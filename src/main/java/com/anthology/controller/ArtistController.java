@@ -4,6 +4,7 @@ package com.anthology.controller;
 import com.anthology.dto.requests.ArtistRequest;
 import com.anthology.dto.requests.ArtistUpdateRequest;
 import com.anthology.dto.responses.ArtistResponse;
+import com.anthology.model.CredentialsEntity;
 import com.anthology.service.ArtistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +30,6 @@ public class ArtistController {
     private final ArtistService artistService;
 
 
-    ///  privados
 
 
     @Operation(summary = "Crear Artista", description = "Crea un nuevo Artista en el sistema")
@@ -55,11 +56,21 @@ public class ArtistController {
     public ResponseEntity<ArtistResponse> updateArtist(@Parameter(description = "Id del Artista") @PathVariable Long id, @Valid @RequestBody ArtistUpdateRequest artistUpdateRequest){
         return ResponseEntity.status(HttpStatus.OK).body(artistService.updateById(id, artistUpdateRequest));
     }
+    @Operation(summary = "Modificar mi perfil de Artista", description = "Permite al artista autenticado modificar sus propios datos")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Artista actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada invalido"),
+            @ApiResponse(responseCode = "404", description = "Perfil de artista no encontrado")
+    })
+    @PutMapping("/artist")
+    @PreAuthorize("hasRole('ARTIST')")
+    public ResponseEntity<ArtistResponse>updateMyArtist(
+            @Valid @RequestBody ArtistUpdateRequest artistUpdateRequest, @AuthenticationPrincipal CredentialsEntity credentials){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(artistService.updateMyArtist(credentials.getUser().getId(), artistUpdateRequest));
+    }
 
 
-
-
-    /// publicos
     @Operation(summary = "Buscar Artistas", description = "Buscar todos los Artistas")
     @ApiResponse(responseCode = "200", description = "Busqueda realizada correctamente")
     @PreAuthorize("isAuthenticated()")

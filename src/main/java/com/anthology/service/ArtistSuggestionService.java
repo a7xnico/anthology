@@ -1,5 +1,6 @@
 package com.anthology.service;
 
+import com.anthology.dto.requests.ArtistRequest;
 import com.anthology.dto.requests.ArtistSuggestionRequest;
 import com.anthology.dto.responses.ArtistSuggestionResponse;
 import com.anthology.enums.Status;
@@ -9,6 +10,7 @@ import com.anthology.mapper.ArtistSuggestionMapper;
 import com.anthology.model.ArtistSuggestion;
 import com.anthology.model.User;
 import com.anthology.repository.ArtistSuggestionRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class ArtistSuggestionService {
     private final ArtistSuggestionRepository artistSuggestionRepository;
     private final ArtistSuggestionMapper artistSuggestionMapper;
     private final UserService userService;
+    private final ArtistService artistService;
 
     public ArtistSuggestionResponse createArtistSuggestion(ArtistSuggestionRequest artistSuggestionRequest){
 
@@ -57,6 +60,7 @@ public class ArtistSuggestionService {
         return artistSuggestionMapper.toDTO(findArtistSuggestionById(id));
     }
 
+    @Transactional
     public ArtistSuggestionResponse cambiarEstadoSuggestion(Long id,Status nuevoEstado){
 
         ArtistSuggestion artistSuggestion = findArtistSuggestionById(id);
@@ -65,10 +69,16 @@ public class ArtistSuggestionService {
             throw new SystemRuleException("Solo se pueden cambiar sugerencias en estado PENDING");
 
         artistSuggestion.setStatus(nuevoEstado);
+        artistSuggestionRepository.save(artistSuggestion);
+        if (nuevoEstado == Status.APPROVED) {
+            ArtistRequest artistRequest = new ArtistRequest(artistSuggestion.getStageName(), artistSuggestion.getBiography(),
+                    artistSuggestion.getInstagram(), artistSuggestion.getSpotify(),
+                    artistSuggestion.getYoutube(), artistSuggestion.getUser().getId()
+            );
+            artistService.createArtist(artistRequest);
+        }
 
         return artistSuggestionMapper.toDTO(artistSuggestionRepository.save(artistSuggestion));
-
-
     }
 
 
