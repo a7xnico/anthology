@@ -97,6 +97,7 @@ public class PlaylistController {
     })
 
    @GetMapping("{id}/user")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<PlaylistResponse>>findByuser(@Parameter(description = "ID del usuario")@PathVariable Long id)
    {
        return ResponseEntity.status(HttpStatus.OK).body(playlistService.findByUser(id));
@@ -110,11 +111,13 @@ public class PlaylistController {
     })
 
    @PatchMapping("/{idPlaylist}/canciones/{idSongVersion}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PlaylistResponse>agregarCancion(@Parameter (description = "ID del playlist")@PathVariable Long idPlaylist,@Parameter(description = "ID de la version de la cancion")@PathVariable Long idSongVersion)
    {
        return ResponseEntity.status(HttpStatus.OK).body(playlistService.agregarCancion(idPlaylist,idSongVersion));
    }
    @DeleteMapping("/{idPlaylist}/canciones/{idSongVersion}")
+   @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PlaylistResponse>eliminarCancion(@Parameter (description = "ID del playlist")@PathVariable Long idPlaylist,@Parameter(description = "ID de la version de la cancion")@PathVariable Long idSongVersion)
    {
        return ResponseEntity.status(HttpStatus.OK).body(playlistService.eliminarCancion(idPlaylist,idSongVersion));
