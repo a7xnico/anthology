@@ -6,7 +6,7 @@ import com.anthology.model.Playlist;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {SongVersionMapper.class})
 public interface PlaylistMapper {
 
     Playlist toEntity(PlaylistRequest dto);
