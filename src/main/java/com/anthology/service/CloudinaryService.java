@@ -31,7 +31,7 @@ public class CloudinaryService {
 
     public String uploadPdf(byte[] pdfBytes, String filename){
         try {
-            String publicId = filename.replace(".pdf", "") + "_" + System.currentTimeMillis();
+            String publicId = filename.replace(".pdf", "").replaceAll("[^a-zA-Z0-9_-]", "_") + "_" + System.currentTimeMillis();
 
             Map uploadResult = cloudinary.uploader().upload(pdfBytes, ObjectUtils.asMap(
                     "resource_type", "raw",
