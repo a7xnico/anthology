@@ -14,8 +14,8 @@ public record PlaylistResponse(
          Long idUser,
          String name,
          boolean isDefault,
-         LocalDateTime createdAt
-
+         String createdAt,
+         List<SongVersionResponse> songVersions
 
 ) {
 }

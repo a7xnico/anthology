@@ -34,6 +34,7 @@ public class CommentController {
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(request));
     }
+
     @Operation(summary = "Eliminar comentario", description = "Realiza un borrado lógico del comentario ")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Comentario eliminado exitosamente"),
@@ -48,6 +49,7 @@ public class CommentController {
                 .noContent()
                 .build();
     }
+
     @Operation(summary = "Listar comentarios", description = "Devuelve todas los comentarios del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de comentarios obtenida exitosamente")
     @PreAuthorize("hasRole('ADMIN')")
@@ -69,6 +71,19 @@ public class CommentController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(commentService.findByid(id));
+    }
+
+    @Operation(summary = "Listar comentarios de una versión", description = "Devuelve todos los comentarios de una versión de canción específica")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de comentarios obtenida exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Versión no encontrada")
+    })
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/song-version/{songVersionId}")
+    public ResponseEntity<List<CommentsResponse>> findBySongVersionId(
+            @Parameter(description = "ID de la versión de canción") @PathVariable Long songVersionId
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.findBySongVersionId(songVersionId));
     }
 
 }

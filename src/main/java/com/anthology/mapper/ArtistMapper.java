@@ -12,5 +12,6 @@ public interface ArtistMapper {
     @Mapping(target = "id", ignore = true)
     Artist toEntity(ArtistRequest artistRequest);
 
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd/MM/yyyy HH:mm")
     ArtistResponse toDTO(Artist artist);
 }

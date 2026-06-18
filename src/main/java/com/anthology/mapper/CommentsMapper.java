@@ -3,16 +3,16 @@ package com.anthology.mapper;
 import com.anthology.dto.requests.CommentsRequest;
 import com.anthology.dto.responses.CommentsResponse;
 import com.anthology.model.Comment;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class CommentsMapper {
-    public Comment toEntity(CommentsRequest dto)
-    {
-        return Comment.builder().content(dto.content()).build();
-    }
-    public CommentsResponse toDto(Comment comment)
-    {
-       return CommentsResponse.builder().id(comment.getId()).idUser(comment.getUser().getId()).idSongVersion(comment.getSongVersion().getId()).content(comment.getContent()).createdAt(comment.getCreatedAt()).build();
-    }
+@Mapper(componentModel = "spring")
+public interface CommentsMapper {
+    Comment toEntity(CommentsRequest request);
+
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "songTitle", source = "songVersion.song.title")
+    @Mapping(target = "instrument", source = "songVersion.instrument")
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd/MM/yyyy HH:mm")
+    CommentsResponse toDto(Comment comment);
 }

@@ -26,13 +26,21 @@ public class CommentService {
     {
         User user=userService.findUserById(request.idUser());
         SongVersion songVersion=songVersionService.findSongVersionById(request.SongVersion());
-        Comment comment=mapper.toEntity(request);
+
+        Comment comment= mapper.toEntity(request);
+        comment.setUser(user);
+        comment.setSongVersion(songVersion);
 
         return mapper.toDto(repository.save(comment));
     }
     public Comment findCommentById(Long id)
     {
         return repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("no se encontro el comentario"));
+    }
+
+    public List<CommentsResponse> findBySongVersionId(Long songVersionId){
+        songVersionService.findSongVersionById(songVersionId);
+        return repository.findBySongVersionId(songVersionId).stream().map(mapper::toDto).toList();
     }
 
     public CommentsResponse findByid(Long id)

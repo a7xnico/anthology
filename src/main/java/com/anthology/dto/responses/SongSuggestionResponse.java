@@ -14,7 +14,7 @@ public record SongSuggestionResponse(
         String artistName,
         String notes,
         SongSuggestionStatus status,
-        LocalDateTime createdAt
+        String createdAt
 
 ) {
 }

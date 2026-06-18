@@ -2,6 +2,7 @@ package com.anthology.dto.responses;
 
 
 
+import com.anthology.enums.Instrument;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -9,9 +10,10 @@ import java.time.LocalDateTime;
 public record CommentsResponse(
 
         Long id,
-        Long idUser,
-        Long idSongVersion,
+        String username,
+        String songTitle,
+        Instrument instrument,
         String content,
-        LocalDateTime createdAt
+        String createdAt
 ) {
 }
