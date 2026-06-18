@@ -31,7 +31,10 @@ public class PlaylistService {
 
         Playlist playlist=playlistMapper.toEntity(playlistRequest);
         playlist.setUser(user);
-        playlist.setIsDefault(true);
+
+        boolean hayDefault = playlistRepository.existsByUserIdAndIsDefaultTrue(user.getId());
+        playlist.setIsDefault(!hayDefault);
+
         return playlistMapper.toDTO(playlistRepository.save(playlist));
     }
 
