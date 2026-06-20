@@ -10,5 +10,6 @@ import org.mapstruct.Mapping;
 public interface SongSuggestionMapper {
     SongSuggestion toEntity(SongSuggestionRequest dto);
     @Mapping(source = "user.id", target = "idUser")
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd/MM/yyyy HH:mm")
     SongSuggestionResponse toDTO(SongSuggestion entity);
 }

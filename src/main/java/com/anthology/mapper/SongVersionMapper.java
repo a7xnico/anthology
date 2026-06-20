@@ -8,5 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SongVersionMapper {
     @Mapping(target = "songId", source = "song.id")
+    @Mapping(target = "songTitle", source = "song.title")
     SongVersionResponse toDTO(SongVersion songVersion);
 }

@@ -9,6 +9,6 @@ public record ArtistResponse(
         String instagram,
         String youtube,
         String spotify,
-        LocalDateTime createdAt
+        String createdAt
 ) {
 }

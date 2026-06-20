@@ -11,5 +11,6 @@ public interface PlaylistMapper {
 
     Playlist toEntity(PlaylistRequest dto);
     @Mapping(source = "user.id", target = "idUser")
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "dd/MM/yyyy HH:mm")
     PlaylistResponse toDTO(Playlist playlist);
 }
