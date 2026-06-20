@@ -45,3 +45,6 @@ cloudinary:
   cloud-name: dhxsgadjy
   api-key: 487918519717983
   api-secret: Tecg5J9N6WIqBSV3otWkyWFoK1g
+
+musescore:
+  path: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
