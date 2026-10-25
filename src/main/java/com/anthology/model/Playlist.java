@@ -31,6 +31,7 @@ public class Playlist extends BaseEntity{
     private String name;
 
     @Column(name = "is_default", nullable = false)
+    @Builder.Default
     private Boolean isDefault = false;
 
     @ManyToMany
@@ -40,6 +41,7 @@ public class Playlist extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "song_version_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"playlist_id", "song_version_id"})
     )
+    @Builder.Default
     private List<SongVersion> songVersions = new ArrayList<>();
 
 }
