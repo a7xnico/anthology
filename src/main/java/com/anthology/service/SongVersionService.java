@@ -112,8 +112,10 @@ public class SongVersionService {
                 .toList();
     }
 
-    public List<SongVersionResponse> findMyVersions(Long artistId) {
-        return songVersionRepository.findByArtistId(artistId)
+    public List<SongVersionResponse> findMyVersions(Long songId, Long userId) {
+        Artist artist = artistService.findByUserId(userId);
+
+        return songVersionRepository.findBySongIdAndArtistId(songId, artist.getId())
                 .stream()
                 .map(songVersionMapper::toDTO)
                 .toList();
