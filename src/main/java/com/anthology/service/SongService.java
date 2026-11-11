@@ -80,7 +80,6 @@ public class SongService {
         if (request.genre() != null) song.setGenre(request.genre());
 
         if (request.albumId() != null) song.setAlbum(albumService.findAlbumById(request.albumId()));
-        else song.setAlbum(null);
 
         return songMapper.toDTO(songRepository.save(song));
     }

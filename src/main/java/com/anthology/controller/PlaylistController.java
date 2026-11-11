@@ -6,6 +6,7 @@ import com.anthology.dto.requests.UserRequest;
 import com.anthology.dto.requests.UserUpdateRequest;
 import com.anthology.dto.responses.PlaylistResponse;
 import com.anthology.dto.responses.UserResponse;
+import com.anthology.model.CredentialsEntity;
 import com.anthology.service.PlaylistService;
 import com.anthology.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,9 +36,10 @@ public class PlaylistController {
     })
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PlaylistResponse> createPlaylist(@Valid @RequestBody PlaylistRequest request)
+    public ResponseEntity<PlaylistResponse> createPlaylist(@AuthenticationPrincipal CredentialsEntity credentials,
+                                                           @Valid @RequestBody PlaylistRequest request)
     {
-        return ResponseEntity.status(HttpStatus.CREATED).body((playlistService.create(request)));
+        return ResponseEntity.status(HttpStatus.CREATED).body((playlistService.create(request, credentials)));
     }
     @Operation(summary = "Editar playlist", description = "Modifica parcialmente los datos de una playlist existente")
     @ApiResponses({
@@ -46,10 +49,10 @@ public class PlaylistController {
     })
     @PatchMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PlaylistResponse>updatePlaylist(@Parameter(description = "ID del playlist")@PathVariable Long id, @Valid @RequestBody PlaylistUpdateRequest request)
-    {
-        return ResponseEntity.status(HttpStatus.OK).body(playlistService.updatePlaylist(id,request));
-
+    public ResponseEntity<PlaylistResponse> updatePlaylist(
+            @AuthenticationPrincipal CredentialsEntity credentials,
+            @PathVariable Long id, @Valid @RequestBody PlaylistUpdateRequest request) {
+        return ResponseEntity.ok(playlistService.updatePlaylist(id, request, credentials));
     }
 
 
@@ -61,11 +64,9 @@ public class PlaylistController {
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deletePlaylist(
-            @Parameter(description = "ID del playlist") @PathVariable Long id){
-        playlistService.deletePlaylist(id);
-        return ResponseEntity
-                .noContent()
-                .build();
+            @AuthenticationPrincipal CredentialsEntity credentials, @PathVariable Long id) {
+        playlistService.deletePlaylist(id, credentials);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Listar playlist", description = "Devuelve todas los playlist del sistema")
@@ -85,11 +86,10 @@ public class PlaylistController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<PlaylistResponse> findById(
-            @Parameter(description = "ID del playlist") @PathVariable Long id){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(playlistService.findById(id));
+            @AuthenticationPrincipal CredentialsEntity credentials, @PathVariable Long id) {
+        return ResponseEntity.ok(playlistService.findById(id, credentials));
     }
+
     @Operation(summary = "Playlists de usuario", description = "Devuelve todos sus playlists por su ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
@@ -98,10 +98,11 @@ public class PlaylistController {
 
    @GetMapping("{id}/user")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<PlaylistResponse>>findByuser(@Parameter(description = "ID del usuario")@PathVariable Long id)
-   {
-       return ResponseEntity.status(HttpStatus.OK).body(playlistService.findByUser(id));
-   }
+    public ResponseEntity<List<PlaylistResponse>> findByuser(
+            @AuthenticationPrincipal CredentialsEntity credentials, @PathVariable Long id) {
+        return ResponseEntity.ok(playlistService.findByUser(id, credentials));
+    }
+
     @Operation(summary = "agregar version de cancion al playlist", description = "Agrega una version de una cancion en una playlist existente por sus ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Cancion agregada correctamente"),
@@ -112,14 +113,17 @@ public class PlaylistController {
 
    @PatchMapping("/{idPlaylist}/canciones/{idSongVersion}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PlaylistResponse>agregarCancion(@Parameter (description = "ID del playlist")@PathVariable Long idPlaylist,@Parameter(description = "ID de la version de la cancion")@PathVariable Long idSongVersion)
-   {
-       return ResponseEntity.status(HttpStatus.OK).body(playlistService.agregarCancion(idPlaylist,idSongVersion));
-   }
+    public ResponseEntity<PlaylistResponse> agregarCancion(
+            @AuthenticationPrincipal CredentialsEntity credentials,
+            @PathVariable Long idPlaylist, @PathVariable Long idSongVersion) {
+        return ResponseEntity.ok(playlistService.agregarCancion(idPlaylist, idSongVersion, credentials));
+    }
+
    @DeleteMapping("/{idPlaylist}/canciones/{idSongVersion}")
    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PlaylistResponse>eliminarCancion(@Parameter (description = "ID del playlist")@PathVariable Long idPlaylist,@Parameter(description = "ID de la version de la cancion")@PathVariable Long idSongVersion)
-   {
-       return ResponseEntity.status(HttpStatus.OK).body(playlistService.eliminarCancion(idPlaylist,idSongVersion));
+   public ResponseEntity<PlaylistResponse> eliminarCancion(
+           @AuthenticationPrincipal CredentialsEntity credentials,
+           @PathVariable Long idPlaylist, @PathVariable Long idSongVersion) {
+       return ResponseEntity.ok(playlistService.eliminarCancion(idPlaylist, idSongVersion, credentials));
    }
 }

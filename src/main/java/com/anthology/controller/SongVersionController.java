@@ -123,10 +123,11 @@ public class SongVersionController {
     @GetMapping("/api/artist/my-versions")
     @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<List<SongVersionResponse>> findMyVersions(
+            @PathVariable Long songId,
             @AuthenticationPrincipal CredentialsEntity credentials) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(songVersionService.findMyVersions(credentials.getUser().getId()));
+                .body(songVersionService.findMyVersions(songId, credentials.getUser().getId()));
     }
 
     @Operation(summary = "Actualizar estado", description = "Aprueba o rechaza una versión pendiente")

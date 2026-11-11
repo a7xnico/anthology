@@ -1,6 +1,7 @@
 package com.anthology.model;
 
 
+import com.anthology.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -53,6 +54,10 @@ public class CredentialsEntity implements UserDetails {
                 new SimpleGrantedAuthority("ROLE_" + rol.getRole().name())));
 
         return authorities;
+    }
+
+    public boolean hasRole(Role role) {
+        return roles.stream().anyMatch(r -> r.getRole() == role);
     }
 
     @Override
