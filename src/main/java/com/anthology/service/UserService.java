@@ -38,11 +38,14 @@ public class UserService {
         if(userRepository.existsByUsername(userRequest.username()))
             throw new DuplicateResourceException("Ya existe un usuario con ese nombre");
 
+        if(userRepository.existsByEmailIgnoreCase(userRequest.email()))
+            throw new DuplicateResourceException("Ya existe un usuario con ese email");
+
          User user=userMapper.toEntity(userRequest);
 
         String encodedPassword = passwordEncoder.encode(userRequest.password());
 
-        user.setPasswordHash(passwordEncoder.encode(encodedPassword));
+        user.setPasswordHash(encodedPassword);
 
         if (user.getRole() == null) {
             user.setRole(Role.USER);
@@ -67,28 +70,51 @@ public class UserService {
         return userMapper.toDTO(savedUser);
     }
 
+    @Transactional
     public UserResponse updateUser(Long id,UserUpdateRequest request)
     {
         User user=findUserById(id);
-        if(request.username()!= null)user.setUsername(request.username());
-        if(request.email()!= null)user.setEmail(request.email());
-        if (request.password() != null) user.setPasswordHash(
-                passwordEncoder.encode(request.password()));
 
-        return userMapper.toDTO(userRepository.save(user));
+        CredentialsEntity credentials = credentialsRepository.findByUserId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Credenciales del usuario no encontradas"));
+
+        if (request.username() != null && !request.username().equals(user.getUsername())) {
+            if (userRepository.existsByUsername(request.username()))
+                throw new DuplicateResourceException("Ya existe un usuario con ese nombre");
+            user.setUsername(request.username());
+            credentials.setUsername(request.username());
+        }
+
+        if (request.email() != null && !request.email().equalsIgnoreCase(user.getEmail())) {
+            if (userRepository.existsByEmailIgnoreCase(request.email()))
+                throw new DuplicateResourceException("Ya existe un usuario con ese email");
+            user.setEmail(request.email());
+        }
+
+        if (request.password() != null && !request.password().isBlank()) {
+            String encodedPassword = passwordEncoder.encode(request.password());
+            user.setPasswordHash(encodedPassword);
+            credentials.setPassword(encodedPassword);
+        }
+
+        userRepository.save(user);
+        credentialsRepository.save(credentials);
+
+        return userMapper.toDTO(user);
     }
 
     public User findUserById(Long id)
     {
         return userRepository
                 .findById(id)
+                .filter(user -> !user.isDeleted())
                 .orElseThrow(()-> new ResourceNotFoundException("user no encontrado"));
     }
 
     public List<UserResponse> findAllUsers()
     {
         return userRepository
-                .findAll()
+                .findByDeletedAtIsNull()
                 .stream()
                 .map(userMapper::toDTO)
                 .toList();
@@ -96,7 +122,7 @@ public class UserService {
 
     public List<UserResponse>findAllUsersByUser(){
         return userRepository
-                .findByRoleNot(Role.ADMIN)
+                .findByRoleNotAndDeletedAtIsNull(Role.ADMIN)
                 .stream()
                 .map(userMapper::toDTO)
                 .toList();
@@ -112,18 +138,37 @@ public class UserService {
     public void deleteUser(Long id) {
         User user=findUserById(id);
 
-        ///BORRAR CREDENCIALES
-        credentialsRepository.findByUsername(user.getUsername())
-                .ifPresent(credentialsRepository::delete);
+        CredentialsEntity credentials = credentialsRepository.findByUserId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Credenciales del usuario no encontradas"));
 
+        String deletedUsername = liberarUsername(user.getUsername(), id);
+        String deletedEmail = liberarEmail(user.getEmail(), id);
 
-        userRepository.delete(user);
+        user.setUsername(deletedUsername);
+        user.setEmail(deletedEmail);
+        user.softDelete();
+        userRepository.save(user);
+
+        credentials.setUsername(deletedUsername);
+        credentials.setRefreshToken(null);
+        credentialsRepository.save(credentials);
     }
 
-    // utilizar borrado logico
-//    public void softDeleteUser(Long id){
-//        User user = findUserById(id);
-//        user.softDelete();
-//        userRepository.save(user);
-//    }
+    private String liberarUsername(String username, Long id) {
+        String sufijo = "_deleted_" + id + "_" + System.currentTimeMillis();
+        int maxBase = 50 - sufijo.length();
+        if (maxBase < 0) maxBase = 0;
+
+        String base = username.length() > maxBase ? username.substring(0, maxBase) : username;
+        return base + sufijo;
+    }
+
+    private String liberarEmail(String email, Long id) {
+        String sufijo = ".deleted." + id + "." + System.currentTimeMillis();
+        int arroba = email.lastIndexOf('@');
+
+        if (arroba <= 0) return email + sufijo;
+
+        return email.substring(0, arroba) + sufijo + email.substring(arroba);
+    }
 }

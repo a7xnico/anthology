@@ -23,11 +23,10 @@ public record UserUpdateRequest(
         @Email(message = "el email no cumple con el formato correcto")
         String email,
         @Schema(
-                description = "contraseña del usuario",
+                description = "contraseña del usuario (opcional al editar)",
                 example = "Carlos123"
 
         )
-        @NotBlank(message = "la contraseña no puede estar vacia")
         @Size(min = 4, message = "La password debe tener al menos 4 caracteres")
         String password
 )
