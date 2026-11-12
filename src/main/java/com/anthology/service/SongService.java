@@ -13,6 +13,7 @@ import com.anthology.mapper.SongMapper;
 import com.anthology.model.Album;
 import com.anthology.model.Artist;
 import com.anthology.model.Song;
+import com.anthology.repository.PlaylistRepository;
 import com.anthology.repository.SongRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class SongService {
     private final SongRepository songRepository;
     private final SongMapper songMapper;
     private final AlbumService albumService;
+    private final PlaylistRepository playlistRepository;
     private final ArtistService artistService;
     private final NotificationService notificationService;
 
@@ -99,6 +101,7 @@ public class SongService {
 
     public void deleteSong(Long id){
         Song song = findSongById(id);
+        playlistRepository.removeSongVersionsBySongId(id);
         song.softDelete();
         songRepository.save(song);
     }
