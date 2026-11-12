@@ -70,6 +70,11 @@ public class CredentialsEntity implements UserDetails {
         return this.username;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return this.user == null || !this.user.isDeleted();
+    }
+
 
 
 }

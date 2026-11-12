@@ -10,5 +10,8 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
+    boolean existsByEmailIgnoreCase(String email);
     List<User> findByRoleNot(Role role);
+    List<User> findByDeletedAtIsNull();
+    List<User> findByRoleNotAndDeletedAtIsNull(Role role);
 }
