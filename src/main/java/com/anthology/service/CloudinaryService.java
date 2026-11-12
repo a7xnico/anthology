@@ -7,6 +7,7 @@ import com.cloudinary.utils.ObjectUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -47,6 +48,7 @@ public class CloudinaryService {
         }
     }
 
+    @Named("fileUrl")
     public String buildFileUrl(String publicId) {
         try {
             long expiresAt = System.currentTimeMillis() / 1000 + (60 * 60 * 24 * 7);
