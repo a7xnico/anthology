@@ -52,7 +52,7 @@ public class CommentService {
 
     public List<CommentsResponse>findAll()
     {
-        return repository.findAll().stream().map(mapper::toDto).toList();
+        return repository.findAllWithActiveSongVersion().stream().map(mapper::toDto).toList();
     }
     public void deleateComment(Long id)
     {
