@@ -6,13 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "DTO utilizado para crear comentarios")
 public record CommentsRequest(
-   @Schema(
 
-           description = "ID del usuario",
-           example = "1"
-   )
-   @NotNull(message = "el ID del usuario no puede ser nulo")
-   Long idUser,
    @Schema(
 
            description = "ID de la songVersion",

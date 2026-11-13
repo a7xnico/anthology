@@ -6,11 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "DTO utilizado para sugerir agregar una cancion")
 public record SongSuggestionRequest(
-        @Schema(
-                description = "el id del ususario",
-                example = "3"
-        )
-        Long idUser,
+
 
         @Schema(
                 description = "titulo de la cancion",

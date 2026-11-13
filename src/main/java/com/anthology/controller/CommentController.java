@@ -3,6 +3,7 @@ package com.anthology.controller;
 import com.anthology.dto.requests.CommentsRequest;
 import com.anthology.dto.responses.CommentsResponse;
 import com.anthology.dto.responses.PlaylistResponse;
+import com.anthology.model.CredentialsEntity;
 import com.anthology.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,9 +32,9 @@ public class CommentController {
     })
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<CommentsResponse> createComment(@Valid @RequestBody CommentsRequest request)
+    public ResponseEntity<CommentsResponse> createComment(@AuthenticationPrincipal CredentialsEntity credentials, @Valid @RequestBody CommentsRequest request)
     {
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(request,credentials));
     }
 
     @Operation(summary = "Eliminar comentario", description = "Realiza un borrado lógico del comentario ")

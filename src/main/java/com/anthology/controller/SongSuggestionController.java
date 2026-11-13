@@ -2,6 +2,7 @@ package com.anthology.controller;
 
 import com.anthology.dto.requests.SongSuggestionRequest;
 import com.anthology.dto.responses.SongSuggestionResponse;
+import com.anthology.model.CredentialsEntity;
 import com.anthology.service.SongSuggestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +31,9 @@ public class SongSuggestionController {
     })
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<SongSuggestionResponse> createSongSuggestion(@Valid @RequestBody SongSuggestionRequest request)
+    public ResponseEntity<SongSuggestionResponse> createSongSuggestion(@Valid @RequestBody SongSuggestionRequest request, @AuthenticationPrincipal CredentialsEntity credentials)
     {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request,credentials));
     }
     @Operation(summary = "Listar sugerencias", description = "Devuelve todas las sugerencias del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de sugerencias obtenida exitosamente")
