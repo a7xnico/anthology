@@ -2,11 +2,11 @@ package com.anthology.service;
 
 import com.anthology.dto.requests.CommentsRequest;
 import com.anthology.dto.responses.CommentsResponse;
+import com.anthology.enums.Role;
 import com.anthology.exception.ResourceNotFoundException;
+import com.anthology.exception.UnauthorizedException;
 import com.anthology.mapper.CommentsMapper;
-import com.anthology.model.Comment;
-import com.anthology.model.SongVersion;
-import com.anthology.model.User;
+import com.anthology.model.*;
 import com.anthology.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,9 @@ public class CommentService {
     private final SongVersionService songVersionService;
 
 
-    public CommentsResponse createComment(CommentsRequest request)
+    public CommentsResponse createComment(CommentsRequest request, CredentialsEntity credentials)
     {
-        User user=userService.findUserById(request.idUser());
+        User user=credentials.getUser();
         SongVersion songVersion=songVersionService.findSongVersionById(request.SongVersion());
 
         Comment comment= mapper.toEntity(request);
@@ -45,8 +45,11 @@ public class CommentService {
 
     public CommentsResponse findByid(Long id)
     {
-        return mapper.toDto(findCommentById(id));
+      return mapper.toDto(findCommentById(id));
     }
+
+
+
     public List<CommentsResponse>findAll()
     {
         return repository.findAll().stream().map(mapper::toDto).toList();

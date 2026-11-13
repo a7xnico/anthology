@@ -6,6 +6,7 @@ import com.anthology.enums.SongSuggestionStatus;
 import com.anthology.exception.DuplicateResourceException;
 import com.anthology.exception.ResourceNotFoundException;
 import com.anthology.mapper.SongSuggestionMapper;
+import com.anthology.model.CredentialsEntity;
 import com.anthology.model.SongSuggestion;
 import com.anthology.model.User;
 import com.anthology.repository.SongSuggestionRepository;
@@ -21,13 +22,13 @@ public class SongSuggestionService {
     private final SongSuggestionMapper mapper;
     private final UserService userService;
 
-    public SongSuggestionResponse create(SongSuggestionRequest request)
+    public SongSuggestionResponse create(SongSuggestionRequest request, CredentialsEntity credentials)
     {
 
 
         if(repository.existsByTitleAndArtistName(request.title(), request.artistName()))
             throw new DuplicateResourceException("ya existe una sugerencia para esa cancion de ese artista");
-        User user=userService.findUserById(request.idUser());
+        User user=credentials.getUser();
         SongSuggestion songSuggestion=mapper.toEntity(request);
         songSuggestion.setUser(user);
         songSuggestion.setStatus(SongSuggestionStatus.PENDING);
